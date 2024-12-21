@@ -1,0 +1,1510 @@
+html, body {
+    height: 100%; /* This ensures the body takes up at least 100% of the viewport height */
+    margin: 0;    /* Remove default margin to prevent any unexpected behavior */
+}
+
+/* Use Flexbox to lay out the body */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures the body takes up at least the full height of the viewport */
+}
+
+
+/* VIEWING PROTEIN HERE */
+
+.top-right-window {
+    width: 250px;
+    height: 250px;
+    position: fixed;
+    overflow: hidden;
+}
+
+#bottomAlphaFold {
+    position: absolute;
+    bottom: 0;
+}
+
+/* Style for the canvas element */
+.protein-canvas {
+    border: 3px solid #333;                /* Border around the canvas */
+    border-radius: 10px;                   /* Rounded corners */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Add shadow around the canvas */
+    background-color: #f5f5f5;             /* Background color */
+    max-width: 100%;                       /* Ensure the canvas scales with its container */
+    max-height: 100%;                      /* Ensure the canvas scales with its container */
+    display: block;                        /* Make canvas a block element */
+    margin: auto;                          /* Center the canvas within its container */
+}
+
+/* APPLYING MAIN CONTENT HERE */
+
+/* Main content will take up all the available space between the navbar and footer */
+.main-content {
+    flex: 1; /* This ensures that the content grows to fill any remaining space */
+    width: 1200px;
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.container {
+    width: 100%;
+    /* padding: 20px; */
+    /* border: 2px solid transparent; No border by default */
+    /* box-sizing: border-box; */
+}
+
+.suggestions-box {
+    display: none; /* Hidden by default */
+    position: absolute; /* Positioning relative to the input group */
+    top: calc(100% + 5px); /* Position just below the input */
+    left: 0; /* Align to the left */
+    width: 100%; /* Full width of the input */
+    background: white; /* White background for contrast */
+    border: 1px solid #ccc; /* Border for better visibility */
+    border-radius: 4px; /* Rounded corners */
+    max-height: 150px; /* Max height */
+    overflow-y: auto; /* Scroll if needed */
+    z-index: 1000; /* Ensure it appears on top */
+}
+.suggestion-item {
+    padding: 10px; /* Space for each suggestion */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+.suggestion-item:hover {
+    background-color: #007bff; /* Highlight on hover */
+    color: white; /* Change text color on hover */
+}
+
+.iframe-container {
+    display: none; /* Initially hide the iframe */
+    text-align: center; /* Center content */
+    margin-top: 40px; /* Add top margin to separate from search bar */
+    /* padding: 20px; */
+    width: 100%; /* Set iframe width */
+}
+
+iframe {
+    /* width: 100%; Set iframe width */
+    height: 600px; /* Set iframe height */
+    border: none; /* Remove border */
+    border-radius: 8px; /* Add rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+#iFrameData {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #444;
+    font-weight: bold;
+}
+
+.alert {
+    width: 500px;
+    max-width: 1050px; /* Maximum width */
+    margin: 0 auto;
+    border-radius: 8px; /* Add rounded corners to the alert */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.custom-container {
+    margin-top: 20px; /* Add margin to the title container */
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Navbar items container */
+.navbar-items {
+    display: flex;
+    list-style: none;
+    margin-top: 15px;
+}
+
+.navbar-items li {
+    margin-left: 20px;
+    margin: 0 auto;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    display: inline-block;
+    transition: color 0.3s ease;
+    margin: 0 auto;
+}
+
+/* Hover and active link styles */
+.nav-link:hover {
+    color: #007bff;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Make navbar responsive */
+.navbar-toggler {
+    display: none;
+}
+
+/* Media queries for mobile responsiveness */
+@media (max-width: 1079px) {
+    .navbar-items {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .navbar-items li {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    .navbar-toggler {
+        display: block;
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+    .navbar-toggler.active + .navbar-items {
+        display: flex;
+    }
+}
+
+.btn-primary {
+    transition: background-color 0.3s; /* Smooth transition for button */
+}
+
+.btn-primary:hover {
+    background-color: #004085; /* Darker shade on hover */
+}
+
+.lds-dual-ring {
+    color: #297fff;
+    margin: auto; 
+}
+.lds-dual-ring,
+.lds-dual-ring:after {
+    box-sizing: border-box;
+}
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6.4px solid currentColor;
+    border-color: currentColor transparent currentColor transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/*
+    Going to use this to display general protein information here
+*/
+
+/* Specific styles for the custom table container */
+.protein-info-container {
+    background-color: #e5e5e5;
+    padding: 30px; /* Space around the table */
+    border-radius: 10px; /* Rounded corners for a modern look */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    max-width: 1280px; /* Maximum width */
+    margin: 0 auto; /* Center align the table */
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+    position: relative;
+}
+
+/* New window styling for the top-right corner */
+.protein-info-container .top-right-window {
+    position: absolute; /* Position it relative to the protein-info-container */
+    top: 20px; /* Adjust the distance from the top */
+    right: 20px; /* Adjust the distance from the right */
+    background-color: #fff; /* White background for the window */
+    padding: 15px; /* Space inside the window */
+    border-radius: 8px; /* Rounded corners for the window */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    width: 300px; /* Set a fixed width for the window */
+    max-height: 300px; /* Maximum height for the window */
+    overflow-y: auto; /* Allow scrolling if the content exceeds the height */
+    z-index: 10; /* Ensure it's on top of the table */
+}
+
+/* New class for positioning the protein3DStructureInfo window (same as 3DStructure window) */
+.protein-info-container .top-right-window-disclaimer {
+    position: absolute; /* Keep absolute positioning */
+    top: 270px; /* Adjust the distance from the top (same as 3DStructure) */
+    right: 20px; /* Position it to the left instead of right */
+    background-color: #fff; /* Same white background */
+    padding: 1px; /* Space inside the window */
+    border-radius: 4px; /* Rounded corners for the window */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    width: 300px; /* Set a fixed width for the window */
+    height: 24px; /* Maximum height for the window */
+    z-index: 10; /* Keep on top of table content */
+}
+
+/* Style for the disclaimer (customized to sit below 3DStructureInfo) */
+.disclaimer-text {
+    text-align: center;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.7); /* Darker color for better visibility */
+}
+
+/* Table Styling - Scoped to the protein-info-container */
+.protein-info-container .table {
+    table-layout: fixed; /* Ensure column widths are fixed */
+    width: 100%; /* Make sure table takes full width */
+    border-collapse: collapse; /* Collapse table borders */
+    background-color: #fff; /* White background for table itself */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Light shadow for table */
+    border-radius: 10px; /* Rounded corners for table */
+}
+
+/* Header Styling */
+.protein-info-container .table th {
+    background-color: #007bff; /* Blue background for header */
+    color: #fff; /* White text color */
+    padding: 12px 16px; /* Padding inside header cells */
+    font-size: 16px; /* Larger font size for headers */
+    text-align: left;
+    font-weight: bold; /* Bold text in the header */
+    border-bottom: 2px solid #0066cc; /* Darker border below header */
+    text-transform: uppercase; /* Uppercase text for a modern look */
+}
+
+/* Table Cell Styling */
+.protein-info-container .table th, .protein-info-container .table td {
+    padding: 12px 16px; /* Add space inside cells */
+    border: 1px solid #e0e0e0; /* Light border for table cells */
+    font-size: 14px;
+    color: #333; /* Darker text color for contrast */
+    line-height: 1.6; /* Increased line-height for readability */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+/* Default cell background (light blue-ish) */
+.protein-info-container .table td {
+    background-color: #e3f2fd; /* Soft light blue background */
+    color: #333; /* Dark text color for contrast */
+    word-wrap: break-word; /* Ensure long words break */
+    overflow-wrap: break-word; /* Older support for breaking long words */
+    white-space: normal; /* Allow the text to wrap to the next line */
+    text-align: left;
+    white-space: pre-wrap;
+}
+
+/* Key Column */
+.protein-info-container .table td.key {
+    width: 200px; /* Set width for key column */
+    text-align: center; /* Left-align key text */
+    color: #444; /* Slightly lighter color for keys */
+    border-right: 2px solid #ddd; /* Border on the right side of key column */
+    background-color: #f7f7f7; /* Keep key cells highlighted */
+    font-weight: 700; /* Keep the key text bold */
+}
+
+.protein-info-container .table td.value:hover {
+    background-color: #b0bec5;
+    color: #333;
+    transform: none;
+}
+
+/* Focus State for Table Cells */
+.protein-info-container .table td:focus, .protein-info-container .table th:focus {
+    outline: 2px solid #007bff; /* Blue outline when focused */
+    background-color: #e1f4fd; /* Light blue background on focus */
+}
+
+/* Alternating Row Backgrounds */
+.protein-info-container .table tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light background for even rows */
+}
+
+.protein-info-container .table tr:nth-child(odd) {
+    background-color: #ffffff; /* White background for odd rows */
+}
+
+/* Responsive Table - Stack cells vertically on smaller screens */
+@media screen and (max-width: 1079px) {
+    .protein-info-container .table th, .protein-info-container .table td {
+        display: block; /* Stack cells vertically */
+        width: 100%; /* Ensure each cell takes full width */
+        text-align: left; /* Align text to the left */
+        margin-bottom: 10px; /* Add space between rows */
+    }
+
+    .protein-info-container .table td.key {
+        background-color: #f7f7f7; /* Keep key cells highlighted */
+        font-weight: 700; /* Keep the key text bold */
+    }
+
+    .protein-info-container .table td.value {
+        margin-left: 20px; /* Add some left margin for better readability */
+    }
+
+    .top-right-window {
+        visibility: hidden;
+    }
+
+    .top-right-window-disclaimer {
+        visibility: hidden;
+    }
+}
+
+
+/* PROTEIN SEQUENCE PTM STATISTICS HERE */
+/* Main container styles for protein stats */
+.protein-statistics-container {
+    background-color: #e5e5e5; /* Light gray background */
+    padding: 30px;
+    border-radius: 10px; /* Rounded corners for the container */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    max-width: 1280px; /* Maximum width */
+    margin: 0 auto; /* Center align the container */
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+    margin-bottom: 20px;
+}
+
+/* Heading */
+.protein-statistics-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #444;
+    font-weight: bold;
+}
+
+/* Flexbox for rows */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Column styles */
+.col {
+    flex: 1 1 calc(33% - 20px); /* Ensure three columns */
+    min-width: 250px;
+    box-sizing: border-box;
+}
+
+/* Stat box styles */
+.stat-box {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect for stat boxes */
+.stat-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Icons */
+.stat-box i {
+    margin-bottom: 10px;
+    color: #007bff; /* Blue icons */
+}
+
+/* Links within the stat box */
+.stat-box a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Stat title */
+.stat-box h3 {
+    font-size: 2rem;
+    margin: 10px 0;
+    color: #555;
+}
+
+/* Stat description */
+.stat-box p {
+    font-size: 1rem;
+    color: #777;
+}
+
+/* Colors for different stat boxes */
+.info {
+    background-color: #e3f2fd;
+    border-left: 5px solid #1e88e5;
+}
+
+.success {
+    background-color: #e8f5e9;
+    border-left: 5px solid #43a047;
+}
+
+.warning {
+    background-color: #fff3e0;
+    border-left: 5px solid #ff9800;
+}
+
+/* General hover effect for stat-boxes */
+.stat-box:hover {
+    background-color: #f5f5f5;
+}
+
+/* Focus state */
+.stat-box a:focus {
+    outline: 2px solid #007bff;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .col {
+        flex: 1 1 100%; /* Single column layout for smaller screens */
+    }
+}
+
+
+
+@font-face {
+    font-family: 'perfectDOSVGA';
+    src: url('../data/fonts/perfect_dos_vga.ttf') format('truetype'),
+        url('../data/fonts/perfect_dos_vga.woff') format('woff'),
+        url('../data/fonts/perfect_dos_vga.woff2') format('woff2');
+}
+
+
+/* DISPLAYING THE PROTEIN SEQUENCE HERE */
+
+.protein-sequence-container {
+    background-color: #e5e5e5; /* Light gray background behind the table */
+    padding: 10px; /* Space around the table */
+    border-radius: 10px; /* Rounded corners for a modern look */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    max-width: 1280px; /* Maximum width */
+    margin: 0 auto; /* Center align the table */
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+}
+
+/* Container for sequence blocks */
+#sequenceDisplayer {
+    display: inline-block;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #f4f4f9 0%, #e0e0e0 100%); 
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); 
+    overflow: hidden;
+    flex-grow: 1;
+    width: 95%;
+    box-sizing: border-box;
+    justify-items: left;
+    justify-content: left;
+    margin: 0 auto;
+}
+
+/* Each individual block of sequence */
+.sequence-block {
+    /* background-color: #fff;
+    border-color: #ddd; */
+    /* border-width: 2px; */
+    padding-top: 12px;
+    /* border: 1px solid #e0e0e0; */
+    /* border-radius: 8px; */
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Courier New', Courier, monospace;
+    position: relative;
+    transition: all 0.3s ease;
+    display: inline-block;
+    width: 150px;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Styling for the sequence chunk */
+.sequence-text {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    font-weight: 400;
+    text-align: center;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    pointer-events: none;
+    /* user-select: none; */
+}
+
+/* Styling for the block number */
+.block-number {
+    font-size: 12px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: -2px 5px;
+    border-radius: 3px;
+    margin-left: 10px;
+    user-select: none;
+    pointer-events: none;
+    position: absolute;
+    top: 0; /* Align to the top */
+    right: 0; /* Center horizontally */
+    transform: translateX(-48%)
+}
+
+/* Prevent text overflow issues */
+.sequence-text span {
+    display: inline-block;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* Container for the UniProt sequence information */
+.uniprot-sequence-info {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    width: 100%;  /* Allow it to expand to fill the container */
+    max-width: 500px; /* Adjust max-width to control the container's maximum size */
+    margin: 20px auto;
+}
+
+/* Each information row with label and value */
+.uniprot-sequence-info .info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Label styling */
+.uniprot-sequence-info .info-row .label {
+    font-weight: bold;
+    color: #333;
+    flex: 1;
+    text-align: left;
+}
+
+/* Value styling */
+.uniprot-sequence-info .info-row .value {
+    font-weight: 500;
+    color: #2c3e50;
+    padding-left: 8px; /* Small space between the label and the value */
+}
+
+/* Separator line */
+.uniprot-sequence-info .info-row::before {
+    content: '|';
+    color: #aaa;
+    margin-right: 8px;
+    font-size: 18px;  /* Adjust size of the separator */
+}
+
+/* Styling for each key-value pair to keep space */
+.uniprot-sequence-info .info-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsiveness: Stack sequence blocks on smaller screens */
+@media screen and (max-width: 768px) {
+    #sequenceDisplayer {
+        padding: 15px;
+    }
+
+    .sequence-block {
+        width: 150px;
+        margin-bottom: 10px;
+    }
+
+    .sequence-text {
+        font-size: 16px;
+    }
+
+    .block-number {
+        font-size: 10px;
+    }
+}
+
+.details-panel {
+    padding: 20px;
+    background-color: linear-gradient(135deg, #f4f4f9 0%, #e0e0e0 100%); 
+    border: 1px solid #ddd; /* Light border for separation */
+    border-radius: 10px; /* Rounded corners for a soft, modern look */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    margin-bottom: 40px;
+    max-width: 90%; /* Responsive width */
+    margin: 0 auto; /* Center the panel */
+    overflow: hidden; /* Prevent overflow */
+    position: relative; /* For absolute positioning of elements within */
+    font-family: 'Arial', sans-serif; /* Clean and modern font */
+}
+
+.details-panel h2 {
+    font-size: 20px; /* Larger font for the title */
+    color: #007bff; /* Blue color for the header */
+    font-weight: 600; /* Slightly bold for better visibility */
+    margin-bottom: 15px; /* Space below the header */
+}
+
+.details-panel .localized-sequence {
+    font-family: 'Courier New', Courier, monospace; /* Monospace font for sequence */
+    max-width: 450px;
+    margin: 0 auto;
+    font-size: 24px; /* Clear font size for better readability */
+    line-height: 1.8; /* Increase line height for better spacing */
+    color: #333; /* Darker text for contrast */
+    white-space: pre-wrap; /* Preserve spacing in sequence */
+    word-wrap: break-word; /* Ensure long words or sequences break properly */
+    background-color: #f4f7fa; /* Light gray background */
+    border-radius: 8px; /* Rounded corners for the sequence box */
+    padding: 15px; /* Padding inside the sequence box */
+    border: 1px solid #e0e0e0; /* Light border around the sequence box */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Light shadow around the sequence */
+}
+
+/* Styling for bold PTMs */
+.details-panel .localized-sequence strong {
+    font-weight: 700; /* Make PTMs bold */
+    color: #e64a19; /* Orange color for PTMs */
+}
+
+/* Highlighting the clicked residue */
+.details-panel .localized-sequence span.clicked-residue {
+    font-size: 20px; /* Larger font for emphasis */
+    color: #fff; /* White text */
+    background-color: #007bff; /* Blue background to highlight */
+    border-radius: 50%; /* Rounded appearance */
+    padding: 5px 8px; /* Space around the clicked residue */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow for the clicked residue */
+}
+
+/* Add some space between the localized sequence and PTM info */
+.details-panel .ptm-info {
+    margin-top: 20px; /* Space above PTM info */
+    font-size: 14px; /* Slightly smaller font for PTM data */
+    color: #555; /* Lighter color for PTM details */
+}
+
+/* Panel focus state */
+.details-panel:focus {
+    outline: 3px solid #007bff; /* Blue outline for focus */
+}
+
+/* Smooth transitions for hover and focus effects */
+.details-panel .localized-sequence span:hover {
+    background-color: #f5f5f5; /* Slightly darker background on hover */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+/* Modify the styling for the PTM details container to prevent overflow */
+.details-panel .additional-ptm-details {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word; /* Ensure content wraps inside the box */
+    white-space: normal; /* Allow text to wrap */
+}
+
+/* Modify the PTM entry to manage link overflow */
+.details-panel .ptm-entry {
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f4f7fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow-wrap: break-word; /* Allow words to break and wrap inside the container */
+    word-wrap: break-word; /* Ensure long links break correctly */
+}
+
+/* Style for PTM Type label and content */
+.details-panel .ptm-entry p strong {
+    font-weight: bold;
+    color: #007bff; /* Blue color for strong labels */
+}
+
+/* Ensure links are nicely separated and can wrap into the next line */
+.details-panel .ptm-entry p {
+    margin: 5px 0;
+    color: #333;
+    font-size: 14px;
+    word-wrap: break-word; /* Break long text and links */
+}
+
+/* Style for evidence identifiers (links) */
+.details-panel .ptm-entry p a {
+    color: #007bff;
+    text-decoration: none;
+    display: inline-block; /* Ensure that each link takes its own line if needed */
+    margin-right: 10px; /* Add some space between the links */
+    max-width: 100%; /* Prevent links from exceeding container width */
+    word-wrap: break-word; /* Wrap the long links */
+    overflow-wrap: break-word; /* Handle word wrapping gracefully */
+}
+
+/* Hover effect for evidence links */
+.details-panel .ptm-entry p a:hover {
+    text-decoration: underline; /* Underline the link when hovered */
+    color: #0056b3; /* Darker blue when hovered */
+}
+
+/* Optional: Add a hover effect for the PTM entries */
+.details-panel .ptm-entry:hover {
+    background-color: #f1f1f1; /* Lighten the background on hover */
+    cursor: default; /* Change cursor to indicate interactivity */
+}
+
+.details-panel .ptm-scores {
+    background-color: #b4b4b4;
+    /* font-family: 'Courier New', Courier, monospace; */
+    border-radius: 4px;
+    border: #2c3e50;
+    cursor: default;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#chunkDetails {
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap; /* To preserve line breaks */
+}
+
+.highlightable-text {
+    cursor: default; 
+    font-size: inherit; /* Ensure it inherits font size from the parent */
+    user-select: none;
+    display: inline-block; /* change back to inline if issues persist */
+    position: relative;
+}
+
+/* General highlighted class for styling */
+.highlighted {
+    background-color: #f1c40f;  /* Default highlighted color */
+    font-weight: 1000;
+    color: #2c3e50;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    pointer-events: visible;
+    line-height: 1; /* Reduce line-height to shrink the height of the box */
+    margin-bottom: 5px;
+}
+
+/* Hover effect on highlighted text */
+.highlighted:hover {
+    color: #ffffff;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);  /* Soft shadow for emphasis */
+}
+
+.custom-tooltip {
+    background-color: #333;
+    text-align: center;
+    color: white;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    position: absolute;
+    z-index: 10;
+    white-space: nowrap;
+    pointer-events: none; /* Make sure the tooltip does not interfere with mouse events */
+    opacity: 0.8; /* Slight transparency */
+}
+/* When the tooltip becomes visible */
+.custom-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tooltip:hover {
+    display:block;
+}
+
+.highlightable-text:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip {
+    visibility: hidden;
+    width: 120px; /* Adjust width as needed */
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%; /* Position above the text */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.overlay-line {
+    position: absolute;
+    top: 0; /* Start at the top of the container */
+    left: 50%; /* Center the line horizontally */
+    margin-left: 1px;
+    width: 10px; /* Thickness of the line */
+    height: 100%; /* Extend the line to the full height of the container */
+    background-color: #ccc; /* Color of the line */
+    transform: translateX(-50%); /* Center the line */
+    pointer-events: none; /* Let clicks pass through the line */
+}
+
+
+/* THIS IS FOR FILTERING PTM STUFF */
+
+/* Container for the search box and checkboxes */
+/* #ptmSearchContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+} */
+
+/* Styling for each checkbox list item */
+.checkbox-container li {
+    display: inline-flex;            /* Align checkbox and label horizontally */
+    align-items: center;            /* Center vertically */
+    margin-right: 10px;              /* Space between checkboxes */
+    font-size: 14px;                 /* Standard font size */
+    padding: 0;                      /* Remove any extra padding */
+    position: relative;              /* Ensure that items are properly aligned */
+    user-select: none;               /* Prevent text selection */
+}
+
+/* Hide the checkbox input but keep it functional */
+.checkbox-container input[type="checkbox"] {
+    width: 0;                       /* Set width to 0 to ensure no extra space is taken */
+    height: 0;                      /* Set height to 0 */
+    margin: 0;                       /* Remove default margin */
+    opacity: 0;                      /* Make checkbox invisible */
+    position: absolute;              /* Position it outside the flow */
+    pointer-events: none;            /* Disable interaction with the hidden checkbox */
+}
+
+/* Styling for the labels associated with checkboxes */
+.checkbox-container input[type="checkbox"] + label {
+    display: inline-flex;            /* Align label inline with checkbox */
+    align-items: center;             /* Center the text vertically */
+    cursor: pointer;                /* Pointer cursor on hover */
+    color: #333;                     /* Default text color */
+    background-color: #fff;          /* White background */
+    padding: 0 10px;                 /* Adjusted padding to align properly */
+    font-size: 14px;                 /* Standard font size */
+    border-radius: 5px;              /* Rounded corners */
+    transition: background-color 0.3s ease, border-color 0.3s ease;  /* Smooth transition */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow for labels */
+    min-height: 16px;                /* Ensure the label height matches the checkbox size */
+}
+
+/* Hover and checked states for the labels */
+.checkbox-container input[type="checkbox"]:not(:checked) + label:hover,
+.checkbox-container input[type="checkbox"]:checked + label {
+    border-color: #007bff;           /* Blue border on hover/checked */
+    background-color: #f1f1f1;       /* Light grey background on hover */
+    color: #007bff;                  /* Blue text on hover */
+}
+
+/* Hover effect when checked */
+.checkbox-container input[type="checkbox"]:checked + label:hover {
+    background-color: #0056b3;       /* Darker blue when checked */
+    border-color: #0056b3;           /* Darker border */
+}
+
+/* Focus state for labels */
+.checkbox-container input[type="checkbox"]:focus + label {
+    outline: 2px solid #0056b3;      /* Blue outline for focus */
+    box-shadow: 0 0 5px rgba(0, 91, 255, 0.6); /* Focus shadow for better visibility */
+}
+
+/* Styling to ensure the label behaves like a clickable checkbox */
+.checkbox-container input[type="checkbox"]:checked + label {
+    background-color: #007bff;       /* Blue background when checked */
+    color: white;                    /* White text when checked */
+    border-color: #007bff;           /* Blue border when checked */
+}
+
+/* Styling for collapsible sections (if needed) */
+.accordion {
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.panel {
+    display: none;
+    padding: 0 18px;
+    background-color: #f1f1f1;
+    margin-bottom: 10px;
+}
+
+.plus {
+    font-size: 18px;
+}
+
+.accordion:hover {
+    background-color: #555;
+}
+
+/* Styling for the search box */
+#searchBox {
+    width: 100%;                        /* Full width for the search box */
+    max-width: 350px;                   /* Max width */
+    padding: 12px 20px;
+    margin: 0;                          /* No margin at the top */
+    border: 2px solid #ccc;             /* Soft border */
+    border-radius: 8px;                 /* Rounded corners */
+    font-size: 16px;                    /* Larger font size for readability */
+    box-sizing: border-box;             /* Include padding in width */
+    display: block;                     /* Block display */
+    background-color: #f9f9f9;          /* Light background */
+    transition: all 0.3s ease;          /* Smooth transition for focus state */
+}
+
+/* Adjust hover for search box */
+#searchBox:hover {
+    border-color: #007bff;
+}
+
+/* Focus state for the search box */
+#searchBox:focus {
+    border-color: #007bff;              /* Blue border on focus */
+    outline: none;                      /* Remove default outline */
+    background-color: #fff;             /* Slightly change background on focus */
+}
+
+/* PTM TABLE OVERVIEW STUFF */
+.protein-ptm-overview {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.protein-ptm-overview__table-wrapper {
+    width: 100%;
+    height: 600px;
+    overflow-x: auto;
+}
+
+.protein-ptm-overview__table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.protein-ptm-overview__table th,
+.protein-ptm-overview__table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.protein-ptm-overview__table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.protein-ptm-overview__table td a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.protein-ptm-overview__table td a:hover {
+    text-decoration: underline;
+}
+
+/* EFFECTS FOR ADDITIONAL BUTTONS */
+/* General Button Styling */
+.additional-button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;  /* Slightly rounded corners */
+    border: 2px solid transparent; /* Invisible border for initial styling */
+    background-color: #e3f2fd; /* Green background */
+    color: black;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Button Hover Effect */
+.additional-button:hover {
+    background-color: #c2e3fa; /* Darker green on hover */
+    /* transform: translateY(-3px); */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow on hover */
+}
+
+/* Button Focus Effect */
+.additional-button:focus {
+    outline: none;
+    box-shadow: 0 0 10px #b8e2ff; /* Green outline on focus */
+}
+
+/* Button Active Effect (when clicked) */
+.additional-button:active {
+    /* transform: translateY(1px); */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Subtle shadow when clicked */
+}
+
+/*
+    DOUBLE STRUCTURE DISPLAY - USE THIS IN CONJUNCTION WITH MDTRAJ
+*/
+
+/* Container for the two PDB structures */
+/* #pdbMajor {
+    align-items: flex-start;
+} */
+
+/* Container for the two PDB structures */
+#pdbStructures {
+    display: flex;
+    justify-content: center; /* Centers the content horizontally */
+    align-items: center; /* Centers the content vertically */
+    gap: 20px; /* Optional space between the two viewers */
+    width: 100%; /* Ensure it takes up the full width of the parent */
+    max-width: 100%; /* Make sure it doesn't exceed the parent's width */
+}
+
+#afMajor, #rcsbMajor {
+    width: 100%;
+    height: 100%;
+    align-content: center;
+    vertical-align: top;
+}
+
+/* Set the size of each PDB viewer */
+#afPdbStructure, #rcsbPdbStructure {
+    vertical-align: top;
+    margin: 0 auto;
+    border: 2px solid #000000;
+    border-radius: 0px;
+    width: 500px;
+    height: 500px;
+    /* background-color: #f0f0f0; */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Optional: Add some basic styling */
+/* #pdbMajor {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+} */
+
+/*
+    USE THIS FOR PROPENSITY TABLES
+*/
+
+.PropensityTable {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0px auto;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-family: 'Arial', sans-serif;
+    table-layout: fixed;
+}
+
+.PropensityTable th {
+    padding: 12px 15px;
+    text-align: center;
+    color: #495057;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.PropensityTable td {
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+}
+
+.PropensityTable-row {
+    border-bottom: 1px solid #ddd;
+}
+
+.PropensityTable-key {
+    background-color: #f1f3f5;
+    color: #212529;
+    font-weight: 600;
+    text-align: left;
+    border-right: 1px solid #dee2e6;
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+.PropensityTable-value {
+    background-color: #ffffff;
+    color: #495057;
+    text-align: center;
+    border-right: 1px solid #dee2e6;
+    max-width: 250px;
+    word-wrap: break-word;
+}
+
+.PropensityTable-notes {
+    background-color: #ffffff;
+    color: #495057;
+    text-align: left;
+    max-width: 500px;
+    word-wrap: break-word;
+}
+
+.PropensityTable-row:hover {
+    background-color: #f1f3f5;
+}
+
+.PropensityTable-notes math {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 1079px) {
+    .PropensityTable {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .PropensityTable-key,
+    .PropensityTable-value,
+    .PropensityTable-notes {
+        padding: 10px 8px;
+    }
+
+    .PropensityTable th {
+        font-size: 1rem;
+        padding: 10px 12px;
+    }
+}
+
+/*
+    AND DISPLAYING THE VECTOR ITSELF
+*/
+
+#ptmVector {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 40px;
+    max-width: 1000px;
+    width: 100%;
+    display: block;
+}
+
+#dataVector {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#dataVector th, #dataVector td {
+    padding: 2px 4px;
+    border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#dataVector th {
+    background-color: #A0C4FF;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+#dataVector td {
+    background-color: #ffffff;
+    font-size: 1rem;
+    color: #495057;
+}
+
+#dataVector td:hover {
+    background-color: #f1f3f5;
+    cursor: pointer;
+}
+
+#dataVector td[style*="background-color: rgb(242, 201, 152)"] {
+    background-color: #F2C99A;
+    font-weight: bold;
+}
+
+#vectorHead {
+    background-color: #A0C4FF;
+    color: white;
+}
+
+@media (max-width: 1079px) {
+    #dataVector {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    #dataVector th, #dataVector td {
+        padding: 8px 15px;
+    }
+}
+
+/*
+    PAGE-EXCLUSIVE STUFF
+*/
+
+#markdown {
+    background-color: #f9f9f9;
+    /* Light background */
+    border: 1px solid #ddd;
+    /* Light border */
+    border-radius: 8px;
+    /* Rounded corners */
+    padding: 20px;
+    /* Spacing inside the box */
+    margin: 20px auto;
+    /* Centering the box */
+    max-width: 1280px;
+    /* Maximum width */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    font-family: Arial, sans-serif;
+    /* Font style */
+    line-height: 1.6;
+    /* Line spacing */
+    width: 70%;
+}
+
+#swagger-ui {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f4f4f4;
+}
+
+/* DOWNLOADS PAGE */
+
+.custom-download {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+}
+
+.custom-download h2 {
+    color: #343a40;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.custom-download .form-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+.custom-download .form-select {
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    padding: 10px;
+    transition: border-color 0.3s;
+}
+
+.custom-download .form-select:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.custom-download #downloadButton {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.custom-download #downloadButton:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* ABOUT PAGE */
+
+.team-member {
+    margin-bottom: 30px;
+}
+
+.team-member img {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-top: 15px;
+}
+
+.team-member .card {
+    width: 350px;
+    height: 400px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.team-member .card-body {
+    text-align: center;
+}
+
+.team-member h4 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.team-member p {
+    font-size: 1rem;
+    color: #555;
+}
+
+.team-member a {
+    font-size: 1rem;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.team-member a:hover {
+    text-decoration: underline;
+}
+
+.team-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.publication-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.publication-item {
+    background-color: #ffffff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.publication-item p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.publication-item strong {
+    color: #333;
+}
+
+.publication-item .special-issue {
+    color: #2d6a4f;
+    font-style: italic;
+}
+
+.pub-number {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.question-mark {
+    color:#fff;
+    background-color:#0077ff;
+    width:16px;
+    height:16px;
+    display:inline-block;
+    border-radius:100%;
+    font-size:10px;
+    text-align:center;
+    text-decoration:none;
+    -webkit-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+}

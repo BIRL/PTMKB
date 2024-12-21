@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to PTMKB!</title>
+        <link rel="stylesheet" href="../static/bootstrap-min.css">
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="../static/bootstrap-min.js"></script>
+        <script src="../static/popper.js" defer></script>
+        <script src="../static/toggler.js" defer></script>
+        <script src="../static/index.js" defer></script>
+        <link rel="stylesheet" href="../static/styles.css">
+
+        <!-- Additional Styles for Animations and Effects -->
+        <style>
+            body {
+                background: #f9f9f9;
+                color: #333;
+            }
+
+            .intro {
+                padding: 60px 15px;
+                text-align: center;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                margin: 30px 0;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .intro h1 {
+                font-size: 36px;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-bottom: 20px;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .intro p {
+                font-size: 18px;
+                line-height: 1.6;
+                margin-bottom: 25px;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .intro h2 {
+                font-size: 28px;
+                margin-top: 30px;
+                font-weight: 600;
+                text-decoration: underline;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .home-box {
+                background-color: #f5f5f5;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                width: 250px;
+                padding: 20px;
+                text-align: center;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .home-box:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            .home-box-icon {
+                width: 50px;
+                height: 50px;
+                margin-bottom: 10px;
+            }
+
+            .home-box-content {
+                display: block;
+                font-size: 16px;
+                font-weight: normal;
+                text-decoration: none;
+                color: #333;
+                line-height: 1.5;
+            }
+
+            .home-box-content strong {
+                font-weight: bold;
+                color: #0066cc;
+            }
+
+            .home-box-content:hover {
+                color: #004d99;
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 1080px) {
+                .home-box {
+                    width: 100%; /* Makes the boxes stack vertically on smaller screens */
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav class="navbar" id="navBar">
+            <img src="/picture?picture=logo/ptmkb-1-alt.png" style="width: 150px;" alt="PTMKB">
+            <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+            <ul class="navbar-items">
+                <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
+                <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+                <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
+                <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+                <li><a href="/download" class="nav-link"><span class="nav-item-box">Download</span></a></li>
+                <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section class="intro">
+                <div class="container">
+                    <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold;">Welcome to</h1>
+                    <img src="/picture?picture=logo/ptmkb-1-text.png" style="width: 500px; margin-bottom: 20px;" alt="PTMKB">
+                    <div class="protein-statistics-container">
+                        <p style="text-align: justify; text-align-last: center; margin-bottom: -10px;">
+                            <strong>PTMKB</strong> is designed to serve any and all data related to the <strong>Post-Translational Modifications</strong> (PTMs) of proteins. We aim to assist researchers and developers alike to advance in the understanding, exploration, and application of PTMs in cellular process.
+                            By providing simple access to a rich repository of PTM data, algorithmic calculations, and tools for integration into systems, we plan to accelerate breakthroughs in fields such as drug discovery, disease research, and biotechnology.
+                        </p>
+                    </div>
+
+                    <h5><a style="text-align: center; font-size: 24px; color: #1a0dab; font-weight: 100;" href="/documentation">Get started with the website's help page by clicking here!</a></h5>
+
+                    <h2 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;">Key Features</h2>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px;">
+                        <div class="home-box">
+                            <img src="/picture?picture=icons/search-protein.png" alt="Search Icon" class="home-box-icon">
+                            <a href="/search" class="home-box-content">
+                                <strong>Search and find extensive detail on PTMs</strong> (including evidences, secondary structures, and solvent accessible surface area)
+                            </a>
+                        </div>
+                        <div class="home-box">
+                            <img src="/picture?picture=icons/propensity.png" alt="Propensity Calculator Icon" class="home-box-icon">
+                            <a href="/propensity" class="home-box-content">
+                                <strong>Use the Propensity Calculator</strong> to find the occurrence of a PTM on a residue
+                            </a>
+                        </div>
+                        <div class="home-box">
+                            <img src="/picture?picture=icons/secure-api.png" alt="API Integration Icon" class="home-box-icon">
+                            <a href="/integration" class="home-box-content">
+                                <strong>Integrate PTMKB into systems</strong> through a fully-featured RESTful API for seamless data access and automation
+                            </a>
+                        </div>
+                        <div class="home-box">
+                            <img src="/picture?picture=icons/download.png" alt="Download Propensity Matrices Icon" class="home-box-icon">
+                            <a href="/download" class="home-box-content">
+                                <strong>View and download the Propensity matrices</strong> for inclusion in systems/scientific literature
+                            </a>
+                        </div>
+                    </div>
+
+                    <h2 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;">PTMKB Workflow</h2>
+                    <div style="text-align: center;">
+                        <img src="/picture?picture=docs/ptmkb_workflow_new.png" style="width: 1000px; border: 2px solid black;">
+                    </div>
+
+                    <h2 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;">Using REST API</h2>
+                    <div class="protein-statistics-container">
+                        <p>
+                            Get started with our RESTful API bundle by downloading the script below. It's simple, efficient, and easy to integrate into your workflow.
+                        </p>
+                        <a href="/download_script" class="additional-button" download="ptmkb_get_started.py" style="margin-top:-20px;">Download Script</a>
+                        <p style="margin-bottom: -10px;">
+                            You can additionally navigate <a href="/integration">over here</a> for more information on the API functionality.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer bg-light py-3">
+            <div class="container text-center">
+                <p class="mb-0"> This website is open for everyone to use. For more information, please contact us.</p>
+                <p class="mb-0"><a href="http://birl.lums.edu.pk/">© 2024 Biomedical Informatics & Engineering Research Laboratory (BIRL)</a></p>
+            </div>
+        </footer>
+    </body>
+</html>

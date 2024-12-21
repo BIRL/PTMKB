@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTMKB - Search for a Protein</title>
+    <link rel="stylesheet" href="../static/bootstrap-min.css">
+    <script id="MathJax-script" async src="../static/tex-mml-chtml.js"></script>
+    <script src="../static/jquery.min.js"></script>
+    <script src="../static/jquery-ui.js"></script>
+    <script src="../static/bootstrap-min.js"></script>
+    <script src="../static/popper.js" defer></script>
+    <script src="../static/3Dmol.js" defer></script>
+    <script src="../static/search.js" defer></script>
+    <script src="../static/toggler.js" defer></script>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <nav class="navbar" id="navBar">
+        <!-- <div class="logo">PTMKB</div> -->
+        <a href="/">
+            <img src="/picture?picture=logo/ptmkb-1-alt.png" style="width: 150px;" alt="PTMKB">
+        </a>
+        <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+        <ul class="navbar-items">
+            <li><a class="nav-link active"><span class="nav-item-box">Search</span></a></li>
+            <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+            <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
+            <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+            <li><a href="/download" class="nav-link"><span class="nav-item-box">Download</span></a></li>
+            <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+        </ul>
+    </nav>
+
+    <script>
+    </script>
+
+    <div class="container-fluid mt-5" style="width: 90%; align-content: center;">
+
+        <div class="alert alert-info text-center">
+            <i class="fa fa-search fa-small"></i>&nbsp;<strong><label>Search</label>&nbsp;(Enter Uniprot Identifier/Accession Number)</strong>
+            <div class="input-group position-relative">
+                <input class="form-control" id="form_value" type="text" placeholder="Enter UniProt ID or UniProt AC">
+                <span class="form-group input-group-btn">
+                    <button type="button" id="form_submit" class="btn btn-primary" onclick="search()">Search</button>
+                </span>
+                <div id="suggestions" class="suggestions-box" style="display: none;"></div>
+            </div>
+            <i class="fa fa-search fa-small"></i><label style="padding: -20px; margin: 0;"><strong>Examples:</strong></label>
+            <a onclick="exampleSearch(this)" style="color: #1a0dab; text-decoration: underline; font-weight: normal; cursor: pointer;">P04637</a>, 
+            <a onclick="exampleSearch(this)" style="color: #1a0dab; text-decoration: underline; font-weight: normal; cursor: pointer;">G6PI_HUMAN</a>
+        </div>
+
+        <div class="iframe-container main-content" id="iframeContainer">
+            <div id="iframeLoader"></div> <!-- Loader class here -->
+            <h1 id="iframeData" style="text-align: center; font-size: 28px; color: #444; font-weight: bold;"></h1>
+            <!-- <div> class="container mt-4"> -->
+            <div id="proteinInfoContainer" class="protein-info-container" style="margin-bottom: 20px;">
+                <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold;">Protein Information</h1>
+                <div id="protein3DStructure" class="top-right-window"></div>
+                <div id="protein3DStructureInfo" class="top-right-window-disclaimer"></div>
+                <table class="table table-striped mx-auto">
+                    <tbody class="thead-light" id="proteinInfo">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="proteinStatisticsContainer" class="protein-statistics-container">
+                <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold;">Protein Statistics</h1>
+                <div class="row">
+                    <div class="col">
+                        <div class="stat-box info">
+                            <i class="fa fa-map-pin fa-5x"></i>
+                            <i class="fa fa-clipboard-check fa-5x"></i>
+                            <a id="totalSites">
+                                <h3 id="total-sites">0 Sites</h3>
+                                Experimentally Verified Site(s)
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="stat-box success">
+                            <i class="fa fa-sitemap fa-5x"></i>
+                            <i class="fa fa-tasks fa-5x"></i>
+                            <a>
+                                <h3 id="unique-ptms">0+ PTM Types</h3>
+                                Types of Post-Translational Modifications
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="stat-box warning">
+                            <i class="fa fa-database fa-5x"></i>
+                            <i class="fa fa-chart-pie fa-5x"></i>
+                            <a>
+                                <h3 id="experimentally-verified">0+ Verified PTMs</h3>
+                                Literature Verifying PTM(s)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="foundProtein" style="position: relative; display: none; padding-bottom: 20px;">
+                <div class="protein-sequence-container">
+                    <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold; margin: 20px;">Protein PTM Sequence</h1>
+                    <div class="protein-info-container" id="uniprotSequence" style="width:70%;"></div>
+                    <p id="iframeData2" style="padding-top: 20px;"></p>
+                    <div class="sequence-displayer" id="sequenceDisplayer"></div>
+                    <div id="ptmSearchContainer">
+                        <p id="iframeData3"></p>
+                        <div id="giantCheckboxContainer" class="checkbox-container">
+                            <ul id="checkboxContainer"></ul>
+                        </div>
+                    </div>
+                    <div id="detailsPanel" class="details-panel">
+                        <h3>Click on a highlighted residue to view its details!</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div id="jpredMajor" class="protein-sequence-container" style="margin-bottom: 20px;">
+                <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold; margin: 20px;">JPred Prediction</h1>
+                <div id="jpredPredictions"></div>
+                <div id="jpredInfo"></div>
+            </div>
+            
+            <div id="pdbMajor" class="protein-sequence-container">
+                <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold; margin: 20px;">Protein PDB Structures</h1>
+                <div id="pdbStructures">
+                    <div id="afMajor" style="align-items: flex-start;">
+                        <h5 id="afHRef">AlphaFold Predicted Structure</h5>
+                        <button id="afClearLabels" class="additional-button">Clear Selections</button>
+                        <button id="afCenter" class="additional-button">Re-center</button>
+                        <button id="afShowDetails" data-type="2" class="additional-button">Cycle Style</button>
+                        <!-- <button id="afShowIndices" data-showing="false" class="additional-button" style="visibility: hidden;">Toggle Indices</button> -->
+                        <div id="afPdbStructure"></div>
+                        <div>
+                            <select style="visibility: hidden;"></select>
+                        </div>
+                    </div>
+                    <div id="rcsbMajor" style="align-items: flex-start;">
+                        <h5 id="rcsbHRef">RCSB Verified Structure</h5>
+                        <button id="rcsbClearLabels" class="additional-button">Clear Selections</button>
+                        <button id="rcsbCenter" class="additional-button">Re-center</button>
+                        <button id="rcsbShowDetails" data-type="2" class="additional-button">Cycle Style</button>
+                        <!-- <button id="rcsbShowIndices" data-showing="false" class="additional-button" style="visibility: hidden;">Toggle Indices</button> -->
+                        <div id="rcsbPdbStructure"></div>
+                        <div>
+                            <span style="padding-left: 10px">Select PDB:</span>
+                            <select id="pdbDropdownSelect" style="height: 30px;"></select>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div id="afProfile" style="display: none;">
+                    <div id="afPdbInfo" class="protein-info-container" style="margin: 20px; background: linear-gradient(135deg, #f4f4f9 0%, #e0e0e0 100%); "></div>
+                </div>
+                <div id="rcsbProfile" style="display: none;">
+                    <div id="rcsbPdbInfo" class="protein-info-container" style="margin: 20px; background: linear-gradient(135deg, #f4f4f9 0%, #e0e0e0 100%); "></div>
+                </div>
+            </div>
+
+            <div id="ptmSiteInfo" style="display: none; align-content: center;">
+                <table class="table table-striped mx-auto">
+                    <tbody class="thead-light" id="ptmInfo">
+                    </tbody>
+                </table>
+                <table class="table table-bordered table-responsive th td" id="dataVector" style="display: none; font-family: Arial, sans-serif;; margin: 0 auto">
+                    <thead id="vectorHead" style="text-align: center"></thead>
+                    <tbody id="vectorBody" style="text-align: center"></tbody>
+                </table>
+                
+                <div style="display: flex; width: 110%;">
+                    <div>
+                        <div id="xlabel" style="margin-bottom: 10px; text-align: center;"></div>
+                        <table class="table table-bordered table-responsive th td" id="dataTable" style="display: none; font-family: Arial, sans-serif;;  text-align: center;">
+                            <thead id="tableHead"></thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content"></div>
+    <footer class="footer bg-light py-3">
+        <div class="container text-center">
+            <p class="mb-0"> This website is open for everyone to use. For more information, please contact us.</p>
+            <p class="mb-0"><a href="http://birl.lums.edu.pk/">© 2024 Biomedical Informatics & Engineering Research Laboratory (BIRL)</a></p>
+        </div>
+    </footer>
+</body>
+</html>

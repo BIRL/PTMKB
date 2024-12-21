@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        const user = sessionStorage.getItem('user')
+        if (user !== null) { // That means user is already logged in.
+            document.location.href = '/';
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTMKB - Sign up or log in!</title>
+    <link rel="stylesheet" href="../static/bootstrap-min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="../static/bootstrap-min.js"></script>
+    <script src="../static/popper.js" defer></script>
+    <script src="../static/signin_signup.js" defer></script>
+    <script src="../static/toggler.js" defer></script>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+
+<body>
+    <nav class="navbar" id="navBar">
+        <!-- <div class="logo">PTMKB</div> -->
+        <a href="/">
+            <img src="/picture?picture=logo/ptmkb-1-alt.png" style="width: 150px;" alt="PTMKB">
+        </a>
+        <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+        <ul class="navbar-items">
+            <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
+            <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+            <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
+            <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+            <li><a href="/download" class="nav-link"><span class="nav-item-box">Download</span></a></li>
+            <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+        </ul>
+    </nav>
+    <div class="container custom-download mt-4">
+        <h4 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;">Login with your Username</h4>
+        
+        <div class="mb-3" id="mod">
+            <input class="form-control" id="loginUsername" type="text" placeholder="Username" style="margin: 10px auto;">
+            <input class="form-control" id="loginPassword" type="password" placeholder="Password" style="margin: 10px auto;">
+            <div class="form-group input-group-btn">
+                <button class="additional-button" type="button" id="form_submit" onclick="login()">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <h3 id="errorMsg" style="text-align: center; font-size: 24px; color: #444; font-weight: bold;"></h3>
+
+    <div class="container custom-download mt-4">
+        <h4 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;">Don't have your username? Sign up below!</h4>
+        
+        <div class="mb-3" id="mod">
+            <input class="form-control" id="signupUsername" type="text" placeholder="Enter username (alphanumeric characters, 8-32 characters)" style="margin: 10px auto;">
+            <input class="form-control" id="signupPassword1" type="password" placeholder="Enter password" style="margin: 10px auto;">
+            <input class="form-control" id="signupPassword2" type="password" placeholder="Re-enter password" style="margin: 10px auto;">
+            <div class="form-group input-group-btn">
+                <button class="additional-button" type="button" id="form_submit" onclick="signup()">Sign up</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

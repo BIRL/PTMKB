@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTMKB - Documentation about the website</title>
+    <link rel="stylesheet" href="../static/bootstrap-min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="../static/bootstrap-min.js"></script>
+    <script src="../static/popper.js" defer></script>
+    <script src="../static/toggler.js" defer></script>
+    <script src="../static/docs.js" defer></script>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+
+<body>
+    <nav class="navbar" id="navBar">
+        <!-- <div class="logo">PTMKB</div> -->
+        <a href="/">
+            <img src="/picture?picture=logo/ptmkb-1-alt.png" style="width: 150px;" alt="PTMKB">
+        </a>
+        <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+        <ul class="navbar-items">
+            <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
+            <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+            <li><a class="nav-link active"><span class="nav-item-box">Documentation</span></a></li>
+            <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+            <li><a href="/download" class="nav-link"><span class="nav-item-box">Download</span></a></li>
+            <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+        </ul>
+    </nav>
+    
+    </div>
+    <div id="markdown">
+        <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold;">Documentation</h1>
+        <p style="text-align: center;"><strong>This page acts as a help page, aiming to explain what each and every page is designed for and how you can navigate through them.</strong></p>
+
+        <hr>
+        <h2 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;">Table of Contents</h1>
+        <ul style="align-content: center;">
+            <li><a onclick="scrollToSection('search-block')" style="color: #0051ff; cursor: pointer;">Search</a</li>
+            <li><a onclick="scrollToSection('propensity-block')" style="color: #0051ff; cursor: pointer;">Propensity</a</li>
+            <li><a onclick="scrollToSection('integration-block')" style="color: #0051ff; cursor: pointer;">Integration</a</li>
+            <li><a onclick="scrollToSection('download-block')" style="color: #0051ff; cursor: pointer;">Download</a</li>
+            <li><a onclick="scrollToSection('about-block')" style="color: #0051ff; cursor: pointer;">About</a</li>
+        </ul>
+
+        <hr id="search-block">
+        <h2 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;"><a href="/search">Search</a></h2>
+        <p style="text-align: justify;">
+            This page is where you can search for proteins using a UniProt-based Protein Identifier or a UniProt-based Accession Number.
+            Upon accessing the page, you will be presented with this screen:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-1.png" style="width: 100%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            You can enter the aforementioned parameter in [<a style="color: #ff0000">1</a>], or click on either of the examples in
+            [<a style="color: #ff0000">2</a>]. As you enter your identifier, the search bar will be filled with suggestions fetched
+            from our database, based on the similarity. Upon entering an ID that is present in our database, the following information
+            will be shown below:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-2.png" style="width: 100%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            First, general information about the input protein is displayed. [<a style="color: #ff0000">1</a>] and [<a style="color: #ff0000">2</a>]
+            are hyperlinks to their respective UniProt pages. The following information is displayed:
+            <ul>
+                <li>UniProt Protein Identifier (UniProt ID)</li>
+                <li>UniProt Accession Number (UniProt AC)</li>
+                <li>Protein Name</li>
+                <li>Gene Name</li>
+                <li>Organism</li>
+                <li>Sequence Length</li>
+                <li>Subcellular Localizations</li>
+                <li>Protein Function</li>
+                <li>Protein Sequence</li>
+            </ul>
+            Scrolling down below, you will see the following information:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-3.png" style="width: 100%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            [<a style="color: #ff0000">1</a>], [<a style="color: #ff0000">2</a>], and [<a style="color: #ff0000">3</a>] respectively
+            show the number of experimentally verified PTM sites for the protein, the number of unique PTMs experimentally observed on this
+            protein, and the total number of literature recorded across all PTMs. [<a style="color: #ff0000">4</a>] shows the overall
+            summary of all PTMs observed on all residues for the input protein. As for the detailed information about the PTMs of the protein,
+            further down is information about the PTM sequence:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-4.png" style="width: 100%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            This shows some UniProt-enabled information about the protein sequence with the option to download the PTM data as a JSON file
+            (see [<a style="color: #ff0000">1</a>]).
+
+            The actual retrieved sequence is displayed just below the general sequence information:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-5.png" style="width: 90%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            The PTMs shown on the sequence are colour-coded for convenience (as shown in [<a style="color: #ff0000">1</a>]). Additionally,
+            you can use the checkboxes ([<a style="color: #ff0000">2</a>]) to hide or show certain PTMs in the list. By default, all of them
+            will be enabled.
+        </p>
+        <p style="text-align: justify;">
+            You can hover over a highlighted amino acid/residue (like [<a style="color: #ff0000">1</a>]) to see what PTM is occurring on 
+            it. When you click on the highlighted residue, detailed information about the PTM will be shown in [<a style="color: #ff0000">3</a>]:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-6.png" style="width: 90%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            A localised sequence of 21 amino acids is shown in [<a style="color: #ff0000">1</a>], with the position of the center amino acid
+            mentioned in [<a style="color: #ff0000">2</a>]. Below them is the dbPTM-annotated PTM information about the amino acid. If 
+            applicable, a RESID Database ID is also provided alongside the PTM type ([<a style="color: #ff0000">3</a>]). For the PTM,
+            evidence identifiers ([<a style="color: #ff0000">4</a>]) are provided as hyperlinks to their respective PubMed article.
+            The Log Sum and Log-Log Product scores (if applicable) are shown as well (see [<a style="color: #ff0000">6</a>]). If you want to
+            know how these scores are calculated, you can click on the question mark ([<a style="color: #ff0000">5</a>]) and it will lead you
+            to a new page explaining the calculation (see the <a onclick="scrollToSection('propensity-block')" style="color: #0051ff; cursor: pointer;">Propensity</a> page info below).
+        </p>
+        <p style="text-align: justify;">
+            This is the base information gathered for the proteins. Extra information is also provided by scrolling down:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-7.png" style="width: 90%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            We also provide secondary structure predictions by JPred to get an idea of how and why a PTM is occurring on the amino acid.
+            Since JPred takes in requests as scheduled jobs, we submit the request upon searching for the protein and put up a disclaimer to wait for 
+            the response from JPred's server when it is done. Once the job is completed, we fetch and process the results.
+        </p>
+        <p style="text-align: justify;">
+            Since JPred also provides hyperlink-embedded alignments, we have shown them as a separate page ([<a style="color: #ff0000">1</a>]).
+            As for the prediction, JPred's own format is followed. Upon clicking on a PTM ([<a style="color: #ff0000">2</a>]), the entire column
+            is highlighted to make it easier for the user to see the secondary structure, any coils, the residue burial percentage,
+            and the confidence scores. Finally, all of the aforementioned information can be downloaded as a JSON file ([<a style="color: #ff0000">3</a>]).
+        </p>
+        <p style="text-align: justify;">
+            Finally, we also present predicted and experimentally verified structures for the protein observed from AlphaFoldDB and RCSB Database respectively:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-8.png" style="width: 90%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            [<a style="color: #ff0000">1</a>] and [<a style="color: #ff0000">2</a>] are hyperlinks to the respective database for extensive additional
+            information. We use 3Dmol.js to view the PDB structures. Some buttons are provided to cycle through three different styles, 
+            clear all selections made by the user, and re-center the render should the user lose sight of the structure. You can interact with the structure by 
+            clicking on a residue, at which point it will display a label that contains the position of the residue in the sequence, the <strong>3-letter code for the residue</strong>,
+            any and all <strong>PTMs that have been observed on the residue</strong>, the <strong>Solvent Accessible Surface Area</strong> (SASA) in square Angstroms (Å²) (calculated using the Shrake-Rupley
+            algorithm), and the <strong>DSSP-calculated secondary structure of the PDB</strong> (the letter after DSSP denotes the simplified structure, while the letter inside the
+            parentheses denotes the detailed structure of the residue, if any), all observed in [<a style="color: #ff0000">3</a>].
+            Additionally, for RCSB database, since all PDBs are queried using the UniProt Accession Number, you can select from one of many possible RCSB PDBs in [<a style="color: #ff0000">4</a>].
+        </p>
+        <p style="text-align: justify;">
+            Finally, the information can also be viewed in a tabular form:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-9.png" style="width: 90%; border: 2px solid black;">
+        </div>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/search-10.png" style="width: 90%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            The sequence, simplified DSSP calculations, detailed DSSP calculations, and the Shrake-Rupley SASA values are given for both the AlphaFoldDB PDB and the RCSB PDB.
+            These can be downloaded individually as a JSON file.
+        </p>
+        <p style="text-align: justify;">
+            This covers the search page functionality.
+        </p>
+
+        <hr id="propensity-block">
+        <h2 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;"><a href="/propensity">Propensity</a></h2>
+        <p style="text-align: justify;">
+            We offer an interface to calculate the <strong>Propensity</strong>, or in other words, the tendency of a residue
+            undergoing a certain PTM based on its neighbouring residues. This tool facilitates users with a calculator that
+            gives the chances of a PTM occurring on a residue, backed by thousands of experimentally-verified observations
+            of PTMs.
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/propensity-1.png" style="width: 80%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">Here is the Propensity page interface:</p>
+        <p style="text-align: justify;">
+            In [<a style="color: #ff0000">1</a>], enter the protein subsequence for which you want to calculate the Propensity.
+            This subsequence must have a length between 13 and 21, and must be an odd value to account for equal number of upstream
+            and downstream residues. The counter ([<a style="color: #ff0000">3</a>]) on the right side of the subsequence input
+            lets you know how long your subsequence is.
+        </p>
+        <p style="text-align: justify;">
+            [<a style="color: #ff0000">2</a>] is where you enter the PTM type for the residue you want to calculate the Propensity for.
+            The list of PTMs will be available to you as suggestions while you type in it.
+        </p>
+        <p style="text-align: justify;">
+            Once you have entered both of the required information, proceed to click on the <strong>"Calculate"</strong> button below.
+            You will be presented with something like this:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/propensity-2.png" style="width: 70%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            [<a style="color: #ff0000">1</a>] shows the input subsequence, with the red-color residue denoting the center of the
+            subseuqence - i.e. the residue for which Propensity is being calculated. [<a style="color: #ff0000">2</a>] shows the
+            <strong>Log Sum</strong> and the <strong>Log Log Product</strong> Propensity scores. These give an educated guess on the
+            tendency of a residue to undergo a PTM given its neighbouring residues. How these values are calculated are shown in
+            [<a style="color: #ff0000">3</a>]. The vector data constructed in [<a style="color: #ff0000">4</a>] is passed through
+            the equations for each score. The vector in turn is constructed from the table in [<a style="color: #ff0000">5</a>].
+            The more red a cell is, the higher its probability is, and green cells denote the values which were picked against the
+            residues at their positions relevant to the PTM site.
+        </p>
+        <p style="text-align: justify;">
+            For Log Sum, every value in [<a style="color: #ff0000">4</a>] is added, with the condition that said value must not be
+            <strong>-inf</strong>. This is a straightforward equation designed to show empirically how much of a tendency there can be of a residue
+            undergoing PTM.
+        </p>
+        <p style="text-align: justify;">
+            For Log Log Product, the process is a bit more complex than Log Sum. First, the longest vector is grabbed which contains
+            no <strong>-inf</strong> values. The newly constructed vector must not be smaller than 13 values in length, where a <strong>NIL</strong> value is shown instead.
+            Next, all of the values (minus the residue whose Propensity we wish to calculate) are multiplied together and reciprocated with 1.
+            Finally, the resultant value is passed through the natural logarithm equation to retrieve the Log Log Product.
+        </p>
+        
+        <hr id="integration-block">
+        <h2 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;"><a href="/integration">Integration</a></h2>
+        <p style="text-align: justify;">
+            The Integration page covers the <strong>RESTful API</strong> side of the website and caters to providing descriptions and examples of each 
+            API call. Five API calls are provided for your convenience, each with its own options on what it accepts as input, how it should be 
+            called, and what it will return, along with examples for each API call on how to execute the call. However, to use the API functionalities,
+            you must first create an account and pair it with an authorization token. This is done for security purposes. Do not worry, we keep only your
+            username and your password hashed through the SHA256 algorithm, along with the account's token. You must use this token for making API calls.
+        </p>
+        <p style="text-align: justify;">
+            To access the API integration, you will first create your own account by clicking on the <strong>Login</strong> tab at the top of the page ([<a style="color: #ff0000">1</a>]):
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/login-1.png" style="width: 50%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            At the top, you can login with your current user handle and password. At the bottom, you can sign up for your account using a unique username.
+            When a new user is created, it is automatically assigned a new token. This token is valid only for 5 days from the time of the token generation.
+        </p>
+        <p style="text-align: justify;">
+            After logging in, you will see this at the top of the page:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/login-2.png" style="width: 50%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            Upon clicking on your username, you will be presented with multiple options:
+        </p>
+        <div style="margin: 0 auto; display: block; text-align: center;">
+            <img src="/picture?picture=docs/login-3.png" style="width: 18%; border: 2px solid black;">
+        </div>
+        <p style="text-align: justify;">
+            You can click on "Copy Token to Clipboard" to copy the token assigned to your account and use this as a Bearer Authorization token. For more details on how to implement it, <a href="/download_script" download="ptmkb_get_started.py">please refer to the Python starter code on making API requests</a>.
+            In case your authorization account expires or you wish to manually reset the token (it is also done automatically!), you can simply click on "Reset Token".
+            Finally, the third button is for simply logging out of your account.
+        </p>
+
+        <hr id="download-block">
+        <h2 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;"><a href="/download">Download</a></h2>
+        <p style="text-align: justify;">This page gives you the option to download one of many Post-Translational Modification (PTM) positional matrices.
+            These matrices allow users to find, through a large amount of PTMs on proteins experimentally verified, what the
+            probability of a PTM occurring on an amino acid is. The data is scraped from the experimentally verified database
+            provided by <strong>dbPTM</strong> and calculated for each PTM on each residue, with relative position of other
+            residues accounted for.
+        </p>
+        <p style="text-align: justify;">As of the <a href="https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkae1005/7889255" target="_blank">dbPTM 2025 update</a>, <strong>72</strong> PTMs are available which have protein sequences with experimental evidences:</p>
+        <div class="protein-info-container" style="margin-bottom: 10px;">
+            <table class="table">
+                <tr>
+                    <td class="value" style="text-align: center;">Acetylation</td>
+                    <td class="value" style="text-align: center;">ADP-ribosylation</td>
+                    <td class="value" style="text-align: center;">AMPylation</td>
+                    <td class="value" style="text-align: center;">Amidation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Biotinylation</td>
+                    <td class="value" style="text-align: center;">Blocked amino end</td>
+                    <td class="value" style="text-align: center;">Butyrylation</td>
+                    <td class="value" style="text-align: center;">Carbamidation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Carboxyethylation</td>
+                    <td class="value" style="text-align: center;">Carboxylation</td>
+                    <td class="value" style="text-align: center;">Cholesterol ester</td>
+                    <td class="value" style="text-align: center;">Citrullination</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">C-linked Glycosylation</td>
+                    <td class="value" style="text-align: center;">Crotonylation</td>
+                    <td class="value" style="text-align: center;">Deamidation</td>
+                    <td class="value" style="text-align: center;">Deamination</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Decanoylation</td>
+                    <td class="value" style="text-align: center;">Decarboxylation</td>
+                    <td class="value" style="text-align: center;">Dephosphorylation</td>
+                    <td class="value" style="text-align: center;">D-glucuronoylation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Disulfide bond</td>
+                    <td class="value" style="text-align: center;">Farnesylation</td>
+                    <td class="value" style="text-align: center;">Formation of an isopeptide bond</td>
+                    <td class="value" style="text-align: center;">Formylation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Gamma-carboxyglutamic acid</td>
+                    <td class="value" style="text-align: center;">Geranylgeranylation</td>
+                    <td class="value" style="text-align: center;">Glutarylation</td>
+                    <td class="value" style="text-align: center;">Glutathionylation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">GPI-anchor</td>
+                    <td class="value" style="text-align: center;">Hydroxyceramide ester</td>
+                    <td class="value" style="text-align: center;">Hydroxylation</td>
+                    <td class="value" style="text-align: center;">Iodination</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Lactoylation</td>
+                    <td class="value" style="text-align: center;">Lactylation</td>
+                    <td class="value" style="text-align: center;">Lipoylation</td>
+                    <td class="value" style="text-align: center;">Malonylation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Methylation</td>
+                    <td class="value" style="text-align: center;">Myristoylation</td>
+                    <td class="value" style="text-align: center;">N-carbamoylation</td>
+                    <td class="value" style="text-align: center;">Neddylation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Nitration</td>
+                    <td class="value" style="text-align: center;">N-linked Glycosylation</td>
+                    <td class="value" style="text-align: center;">N-palmitoylation</td>
+                    <td class="value" style="text-align: center;">Octanoylation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">O-linked Glycosylation</td>
+                    <td class="value" style="text-align: center;">O-palmitoleoylation</td>
+                    <td class="value" style="text-align: center;">O-palmitoylation</td>
+                    <td class="value" style="text-align: center;">Oxidation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Phosphatidylethanolamine amidation</td>
+                    <td class="value" style="text-align: center;">Phosphorylation</td>
+                    <td class="value" style="text-align: center;">Propionylation</td>
+                    <td class="value" style="text-align: center;">Pyrrolidone carboxylic acid</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Pyrrolylation</td>
+                    <td class="value" style="text-align: center;">Pyruvate</td>
+                    <td class="value" style="text-align: center;">S-archaeol</td>
+                    <td class="value" style="text-align: center;">S-carbamoylation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">S-Cyanation</td>
+                    <td class="value" style="text-align: center;">S-cysteinylation</td>
+                    <td class="value" style="text-align: center;">S-diacylglycerol</td>
+                    <td class="value" style="text-align: center;">Serotonylation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">S-linked Glycosylation</td>
+                    <td class="value" style="text-align: center;">S-nitrosylation</td>
+                    <td class="value" style="text-align: center;">S-palmitoylation</td>
+                    <td class="value" style="text-align: center;">Stearoylation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Succinylation</td>
+                    <td class="value" style="text-align: center;">Sulfation</td>
+                    <td class="value" style="text-align: center;">Sulfhydration</td>
+                    <td class="value" style="text-align: center;">Sulfoxidation</td>
+                </tr>
+                <tr>
+                    <td class="value" style="text-align: center;">Sumoylation</td>
+                    <td class="value" style="text-align: center;">Thiocarboxylation</td>
+                    <td class="value" style="text-align: center;">Ubiquitination</td>
+                    <td class="value" style="text-align: center;">UMPylation</td>
+                </tr>
+            </table>
+        </div>
+        <p style="text-align: justify;">Upon selecting a PTM, a residue, and the type of table, you are displayed with the table and the option to download the table as either a <strong>CSV</strong>, a <strong>PDF</strong>, a <strong>PNG</strong>, a <strong>SVG</strong>, or a <strong>JSON</strong>.</p>
+        
+        <hr id="about-block">
+        <h2 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;"><a href="/about">About</a></h2>
+        <p style="text-align: justify;">You may view the people working at the prestigious <strong>Biomedical Informatics & Engineering Research Laboratory</strong> (BIRL) and contact us for queries regarding <strong>PTMKB</strong>.</p>
+    </div>
+
+    <div class="main-content"></div>
+
+    <footer class="footer bg-light py-3">
+        <div class="container text-center">
+            <p class="mb-0"> This website is open for everyone to use. For more information, please contact us.</p>
+            <p class="mb-0"><a href="http://birl.lums.edu.pk/">© 2024 Biomedical Informatics & Engineering Research Laboratory (BIRL)</a></p>
+        </div>
+    </footer>
+</body>
+
+</html>

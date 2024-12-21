@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTMKB - Download Positional Frequency Matrix</title>
+    <link rel="stylesheet" href="../static/bootstrap-min.css">
+    <script src="../static/download.js"></script>
+    <script src="../static/toggler.js" defer></script>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <nav class="navbar" id="navBar">
+        <!-- <div class="logo">PTMKB</div> -->
+        <a href="/">
+            <img src="/picture?picture=logo/ptmkb-1-alt.png" style="width: 150px;" alt="PTMKB">
+        </a>
+        <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+        <ul class="navbar-items">
+            <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
+            <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+            <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
+            <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+            <li><a class="nav-link active"><span class="nav-item-box">Download</span></a></li>
+            <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+        </ul>
+    </nav>
+
+    <div class="container custom-download mt-4">
+        <h4 style="text-align: center;">Download Positional Frequency Matrix Tables</h4>
+        
+        <div class="mb-3" id="mod">
+            <label for="ptmSelect" class="form-label">Select PTM:</label>
+            <select id="ptmSelect" class="form-select" onchange="getAminoAcids(this)">
+                <option>Acetylation</option>
+                <option>ADP-ribosylation</option>
+                <option>Amidation</option>
+                <option>AMPylation</option>
+                <option>Biotinylation</option>
+                <option>Blocked amino end</option>
+                <option>Butyrylation</option>
+                <option>C-linked Glycosylation</option>
+                <option>Carbamidation</option>
+                <option>Carboxyethylation</option>
+                <option>Carboxylation</option>
+                <option>Cholesterol ester</option>
+                <option>Citrullination</option>
+                <option>Crotonylation</option>
+                <option>D-glucuronoylation</option>
+                <option>Deamidation</option>
+                <option>Deamination</option>
+                <option>Decanoylation</option>
+                <option>Decarboxylation</option>
+                <option>Dephosphorylation</option>
+                <option>Disulfide bond</option>
+                <option>Farnesylation</option>
+                <option>Formation of an isopeptide bond</option>
+                <option>Formylation</option>
+                <option>Gamma-carboxyglutamic acid</option>
+                <option>Geranylgeranylation</option>
+                <option>Glutarylation</option>
+                <option>Glutathionylation</option>
+                <option>GPI-anchor</option>
+                <option>Hydroxyceramide ester</option>
+                <option>Hydroxylation</option>
+                <option>Iodination</option>
+                <option>Lactoylation</option>
+                <option>Lactylation</option>
+                <option>Lipoylation</option>
+                <option>Malonylation</option>
+                <option>Methylation</option>
+                <option>Myristoylation</option>
+                <option>N-carbamoylation</option>
+                <option>N-linked Glycosylation</option>
+                <option>N-palmitoylation</option>
+                <option>Neddylation</option>
+                <option>Nitration</option>
+                <option>O-linked Glycosylation</option>
+                <option>O-palmitoleoylation</option>
+                <option>O-palmitoylation</option>
+                <option>Octanoylation</option>
+                <option>Oxidation</option>
+                <option>Phosphatidylethanolamine amidation</option>
+                <option>Phosphorylation</option>
+                <option>Propionylation</option>
+                <option>Pyrrolidone carboxylic acid</option>
+                <option>Pyrrolylation</option>
+                <option>Pyruvate</option>
+                <option>S-archaeol</option>
+                <option>S-carbamoylation</option>
+                <option>S-Cyanation</option>
+                <option>S-cysteinylation</option>
+                <option>S-diacylglycerol</option>
+                <option>S-linked Glycosylation</option>
+                <option>S-nitrosylation</option>
+                <option>S-palmitoylation</option>
+                <option>Serotonylation</option>
+                <option>Stearoylation</option>
+                <option>Succinylation</option>
+                <option>Sulfation</option>
+                <option>Sulfhydration</option>
+                <option>Sulfoxidation</option>
+                <option>Sumoylation</option>
+                <option>Thiocarboxylation</option>
+                <option>Ubiquitination</option>
+                <option>UMPylation</option>
+            </select>
+        </div>
+
+        <div class="mb-3" id="aa">
+            <label for="aaSelect" class="form-label">Select Amino Acid:</label>
+            <select id="aaSelect" class="form-select">
+            </select>
+        </div>
+
+        <div class="mb-3" id="tab">
+            <label for="tableSelect" class="form-label">Select the type of table to download:</label>
+            <select id="tableSelect" class="form-select">
+                <option>Frequency</option>
+                <option>Log Odd (base e)</option>
+                <!-- <option>Log Odd (base 2)</option> -->
+            </select>
+        </div>
+
+        <div class="mb-3" id="download">
+            <label for="downloadSelect" class="form-label">Select download option:</label>
+            <select id="downloadSelect" class="form-select">
+                <option>PNG</option>
+                <option>PDF</option>
+                <option>SVG</option>
+                <option>JSON</option>
+                <option>CSV</option>
+            </select>
+        </div>
+
+        <button id="downloadButton" class="btn btn-primary" onclick="saveFile()">Download</button>
+    </div>
+
+    <div id="ptmTable" style="margin-left: auto; margin-right: auto;"></div>
+
+    <footer class="footer bg-light py-3">
+        <div class="container text-center">
+            <p class="mb-0"> This website is open for everyone to use. For more information, please contact us.</p>
+            <p class="mb-0"><a href="http://birl.lums.edu.pk/">© 2024 Biomedical Informatics & Engineering Research Laboratory (BIRL)</a></p>
+        </div>
+    </footer>
+</body>
+</html>
