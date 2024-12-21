@@ -1,0 +1,5 @@
+Minor deviations of 0.01 to 0.03 in frequency.
+
+Some tables did not exist (possibly because of miniscule sample sice for a good analysis).
+
+Unclean data brings in some ambiguity into sequences used for matrix construction.
