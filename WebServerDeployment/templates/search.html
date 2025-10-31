@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perceptron-PTMKB - Search for a Protein</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js"></script>
+    <script src="../static/search.js" defer></script>
+    <script src="../static/toggler.js" defer></script>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <nav class="navbar" id="navBar" style="background-color: #163c82;">
+        <a href="/">
+            <img src="/picture?picture=logo/ptmkb-1-text-alt-2-black.png" style="width: 300px; padding: 10px 10px;" alt="PTMKB">
+        </a>
+        <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+        <ul class="navbar-items">
+            <li><a href="/search" class="nav-link active"><span class="nav-item-box">Search</span></a></li>
+            <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+            <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
+            <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+            <li><a href="/download" class="nav-link"><span class="nav-item-box">Download</span></a></li>
+            <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+        </ul>
+    </nav>
+
+    <script>
+    </script>
+
+    <div class="container-fluid mt-5" style="width: 90%; align-content: center;">
+        <!-- <div class="protein-statistics-container" style="background-color: #d8ecff; text-align: justify; text-align-last: center; max-width: 600px; margin: 0 auto; margin-bottom: -20px; padding-bottom: 20px;">
+            <p>Here, you can provide a protein's UniProt-based identifier and get to know in detail about the protein's general info, the sequence and PTMs on each residue, the predicted and actual secondary structures, and SASA values.</p>
+        </div>
+        <div class="alert alert-info text-center" style="width: 600px; margin-top: 40px;">
+            <i class="fa fa-search fa-small"></i>&nbsp;<strong><label>Search</label>&nbsp;(Enter Uniprot Identifier/Accession Number)</strong>
+            <div class="input-group position-relative">
+                <input class="form-control" id="form_value" type="text" placeholder="Enter UniProt ID or UniProt AC" style="text-align: center;">
+                <span class="form-group input-group-btn">
+                    <button type="button" id="form_submit" class="btn btn-primary" onclick="search()">Search</button>
+                </span>
+                <div id="suggestions" class="suggestions-box" style="display: none;"></div>
+            </div>
+            <i class="fa fa-search fa-small"></i><label style="padding: -20px; margin: 0;"><strong>Examples:</strong></label>
+            <a onclick="exampleSearch(this)" style="color: #1a0dab; text-decoration: underline; font-weight: normal; cursor: pointer;">P04637</a>, 
+            <a onclick="exampleSearch(this)" style="color: #1a0dab; text-decoration: underline; font-weight: normal; cursor: pointer;">G6PI_HUMAN</a>
+        </div> -->
+
+        <div class="background-wrapper-2" id="search_field">
+            <!-- <div class="background-image"></div> -->
+        
+            <div class="content-layer">
+                
+                <div class="input-group position-relative" style="margin: 15px auto 0 auto; width: 800px; font-size: 30px;">
+                    <input class="form-control" style="font-size: 18px; text-align: left;" id="form_value" type="text" placeholder="Search for a protein by entering a Uniprot Identifier/Accession Number" style="text-align: center;">
+                    <span class="form-group input-group-btn">
+                        <button type="button" id="form_submit" class="btn btn-light landing-page-button" onclick="search()">Search</button>
+                    </span>
+                    <div id="suggestions" class="suggestions-box" style="display: none;"></div>
+                </div>
+        
+                <div style="margin-top: 10px; margin-bottom: 20px;">
+                    <i class="fa fa-search fa-small"></i>
+                    <label style="margin: 0; font-weight: bold;">Examples:</label>
+                    <a onclick="exampleSearch(this)" class="index-options">P04637</a> 
+                    <a onclick="exampleSearch(this)" class="index-options">G6PI_HUMAN</a>
+                    <a onclick="exampleSearch(this)" class="index-options">VP26A_MOUSE</a>
+                    <a onclick="exampleSearch(this)" class="index-options">O14639-4</a>
+                    <a onclick="exampleSearch(this)" class="index-options">P25311</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="iframe-container main-content" id="iframeContainer">
+
+            <!-- Nav tabs -->
+            <div id="tabsHider">
+                <div id="proteinTabs" style="display: none;">
+                    <ul class="nav nav-tabs" role="tablist" style="text-align: center; max-width: 1280px; margin: 0 auto;">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="info-tab" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true" style="color: #333;">Protein Information</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="statistics-tab" data-bs-toggle="tab" href="#statistics" role="tab" aria-controls="statistics" aria-selected="false" style="color: #333;">Statistics</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="ptm-sequence-tab" data-bs-toggle="tab" href="#ptm-sequence" role="tab" aria-controls="ptm-sequence" aria-selected="false" style="color: #333;">PTM Sequence</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="jpred-tab" data-bs-toggle="tab" href="#jpred" role="tab" aria-controls="jpred" aria-selected="false" style="color: #333;">JPred Predictions</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="pdb-tab" data-bs-toggle="tab" href="#pdb" role="tab" aria-controls="pdb" aria-selected="false" style="color: #333;">PDB Structures</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>            
+
+            <div id="iframeLoader"></div> <!-- Loader class here -->
+            <h1 id="iframeData" style="text-align: center; font-size: 28px; color: #444; font-weight: bold;"></h1>
+            <!-- <div> class="container mt-4"> -->
+
+            <!-- Tab content -->
+            <div class="tab-content mt-3" id="proteinTabsContent">
+                <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+                    <div id="proteinInfoContainer" class="protein-info-container" style="margin-bottom: 20px;">
+                        <!-- <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold;">Protein Information</h1> -->
+                        <div id="protein3DStructure" class="top-right-window"></div>
+                        <div id="protein3DStructureInfo" class="top-right-window-disclaimer"></div>
+                        <table class="table table-striped mx-auto">
+                            <tbody class="thead-light" id="proteinInfo">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="statistics" role="tabpanel" aria-labelledby="statistics-tab">
+                    <div id="proteinStatisticsContainer" class="protein-statistics-container">
+                        <!-- <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold;">Protein Statistics</h1> -->
+                        <div class="row">
+                            <div class="col">
+                                <div class="stat-box info">
+                                    <i class="fa fa-map-pin fa-5x"></i>
+                                    <i class="fa fa-clipboard-check fa-5x"></i>
+                                    <a id="totalSites">
+                                        <h3 id="total-sites">0</h3>
+                                        Experimentally Verified Site(s)
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="stat-box success">
+                                    <i class="fa fa-sitemap fa-5x"></i>
+                                    <i class="fa fa-tasks fa-5x"></i>
+                                    <a>
+                                        <h3 id="unique-ptms">0</h3>
+                                        Post-Translational Modifications
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="stat-box warning">
+                                    <i class="fa fa-database fa-5x"></i>
+                                    <i class="fa fa-chart-pie fa-5x"></i>
+                                    <a>
+                                        <h3 id="experimentally-verified">0</h3>
+                                        Literature Verified PTM(s)
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="ptm-sequence" role="tabpanel" aria-labelledby="ptm-sequence-tab">
+                    <div id="foundProtein" style="position: relative; display: none; padding-bottom: 20px;">
+                        <div class="protein-info-container">
+                            <div class="protein-info-container" id="uniprotSequence" style="background: #efefef;"></div>
+                            <div id="detailsPanel" class="details-panel" style="margin-top: 20px; background: #eaf0f7;">
+                                <h3>Click on a highlighted residue to view its details!</h3>
+                            </div>
+                            <p class="protein-statistics-container" id="iframeData2" style="padding-top: 20px; padding-bottom: 20px; margin: 20px auto; background: #f3f3f3;"></p>
+                            <div id="ptmSearchContainer" style="margin-top: 20px;">
+                                <p id="iframeData3" style="background: #e8e8e8;"></p>
+                            </div>
+                            <div id="giantCheckboxContainer" class="checkbox-container" style="margin-bottom: -20px;">
+                                <ul id="checkboxContainer"></ul>
+                            </div>
+                            <div class="sequence-displayer" id="sequenceDisplayer"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="jpred" role="tabpanel" aria-labelledby="jpred-tab">
+                    <div id="jpredMajor" class="protein-sequence-container" style="margin-bottom: 20px;">
+                        <!-- <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold; margin: 20px;">JPred Prediction</h1> -->
+                        <div id="jpredPredictions"></div>
+                        <div id="jpredInfo"></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="pdb" role="tabpanel" aria-labelledby="pdb-tab">
+                    <div id="pdbMajor" class="protein-sequence-container">
+                        <!-- <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold; margin: 20px;">Protein PDB Structures</h1> -->
+                        <div id="pdbStructures">
+                            <div id="afMajor" style="align-items: flex-start;">
+                                <h5 id="afHRef">AlphaFold Predicted Structure</h5>
+                                <button id="afClearLabels" class="additional-button">Clear Selections</button>
+                                <button id="afCenter" class="additional-button">Re-center</button>
+                                <button id="afShowDetails" data-type="2" class="additional-button">Cycle Style</button>
+                                <!-- <button id="afShowIndices" data-showing="false" class="additional-button" style="visibility: hidden;">Toggle Indices</button> -->
+                                <div id="afPdbStructure"></div>
+                                <div>
+                                    <select style="visibility: hidden;"></select>
+                                </div>
+                            </div>
+                            <div id="rcsbMajor" style="align-items: flex-start;">
+                                <h5 id="rcsbHRef">RCSB Verified Structure</h5>
+                                <button id="rcsbClearLabels" class="additional-button">Clear Selections</button>
+                                <button id="rcsbCenter" class="additional-button">Re-center</button>
+                                <button id="rcsbShowDetails" data-type="2" class="additional-button">Cycle Style</button>
+                                <!-- <button id="rcsbShowIndices" data-showing="false" class="additional-button" style="visibility: hidden;">Toggle Indices</button> -->
+                                <div id="rcsbPdbStructure"></div>
+                                <div>
+                                    <span style="padding-left: 10px">Select PDB:</span>
+                                    <select id="pdbDropdownSelect" style="height: 30px;"></select>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div id="afProfile" style="display: none;">
+                            <div id="afPdbInfo" class="protein-info-container" style="margin: 20px; background: linear-gradient(135deg, #f4f4f9 0%, #e0e0e0 100%); "></div>
+                        </div>
+                        <div id="rcsbProfile" style="display: none;">
+                            <div id="rcsbPdbInfo" class="protein-info-container" style="margin: 20px; background: linear-gradient(135deg, #f4f4f9 0%, #e0e0e0 100%); "></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ptmSiteInfo" style="display: none; align-content: center;">
+                <table class="table table-striped mx-auto">
+                    <tbody class="thead-light" id="ptmInfo">
+                    </tbody>
+                </table>
+                <table class="table table-bordered table-responsive th td" id="dataVector" style="display: none; font-family: Arial, sans-serif;; margin: 0 auto">
+                    <thead id="vectorHead" style="text-align: center"></thead>
+                    <tbody id="vectorBody" style="text-align: center"></tbody>
+                </table>
+                
+                <div style="display: flex; width: 110%;">
+                    <div>
+                        <div id="xlabel" style="margin-bottom: 10px; text-align: center;"></div>
+                        <table class="table table-bordered table-responsive th td" id="dataTable" style="display: none; font-family: Arial, sans-serif;;  text-align: center;">
+                            <thead id="tableHead"></thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content"></div>
+    <footer class="footer bg-light py-3" style="padding-top: 20px;">
+        <div class="container text-center">
+            <p class="mb-0" id="footerYear">This website is free and open to all users and there is no login requirement.</p>
+            <p class="mb-0">Biomedical Informatics & Engineering Research Laboratory, Lahore University of Management Sciences</p>
+            <p class="mb-0">DHA, Lahore, Pakistan, +92 (42) 3560 8352</p>
+        </div>
+    </footer>
+    <script>
+        // Get the current year and set it to the span
+        const date = new Date().getFullYear();
+        document.getElementById("footerYear").innerHTML = `<a href="http://birl.lums.edu.pk/">© ${date} BIRL</a> — This website is free and open to all users and there is no login requirement.`
+    </script>
+</body>
+</html>

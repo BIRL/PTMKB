@@ -1,0 +1,88 @@
+{
+  "Acylation/Lipid": [
+    "Acetylation",
+    "Butyrylation",
+    "Crotonylation",
+    "Decanoylation",
+    "Formylation",
+    "Glutarylation",
+    "Lactoylation",
+    "Malonylation",
+    "Myristoylation",
+    "N-palmitoylation",
+    "O-palmitoleoylation",
+    "O-palmitoylation",
+    "Propionylation",
+    "Stearoylation",
+    "Succinylation",
+    "Octanoylation",
+    "S-palmitoylation",
+    "S-diacylglycerol",
+    "S-archaeol"
+  ],
+  "Glycosylation": [
+    "C-linked Glycosylation",
+    "N-linked Glycosylation",
+    "O-linked Glycosylation",
+    "S-linked Glycosylation"
+  ],
+  "Phosphorylation": [
+    "Phosphorylation",
+    "Dephosphorylation",
+    "Phosphatidylethanolamine amidation"
+  ],
+  "Ubiquitination/SUMO": [
+    "Ubiquitination",
+    "Sumoylation",
+    "Neddylation"
+  ],
+  "Enzyme-Catalyzed": [
+    "ADP-ribosylation",
+    "AMPylation",
+    "UMPylation",
+    "GPI-anchor",
+    "Formation of an isopeptide bond",
+    "Phosphorylation"
+  ],
+  "Redox/Oxidation": [
+    "Disulfide bond",
+    "Oxidation",
+    "S-nitrosylation",
+    "Sulfoxidation",
+    "Sulfhydration"
+  ],
+  "Miscellaneous": [
+    "Amidation",
+    "Carbamidation",
+    "Carboxyethylation",
+    "Carboxylation",
+    "Citrullination",
+    "D-glucuronoylation",
+    "Deamidation",
+    "Deamination",
+    "Gamma-carboxyglutamic acid",
+    "Glutathionylation",
+    "Hydroxylation",
+    "Lactylation",
+    "Methylation",
+    "N-carbamoylation",
+    "Nitration",
+    "Propionylation",
+    "Pyrrolidone carboxylic acid",
+    "Pyrrolylation",
+    "S-Cyanation",
+    "S-cysteinylation",
+    "S-carbamoylation",
+    "S-nitrosylation",
+    "Serotonylation",
+    "Sulfation",
+    "Sulfhydration",
+    "Sulfoxidation",
+    "Thiocarboxylation",
+    "Biotinylation",
+    "Blocked amino end",
+    "Cholesterol ester",
+    "Hydroxyceramide ester",
+    "Pyruvate"
+  ]
+}

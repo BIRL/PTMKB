@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to Perceptron-PTMKB!</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/@popperjs/core@2"></script>
+        <script src="../static/toggler.js" defer></script>
+        <script src="../static/index.js" defer></script>
+        <link rel="stylesheet" href="../static/styles.css">
+
+        <!-- Additional Styles for Animations and Effects -->
+        <style>
+            body {
+                background: #f9f9f9;
+                color: #333;
+            }
+
+            .intro {
+                padding: 60px 15px;
+                text-align: center;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                margin: 30px 0;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .intro h1 {
+                font-size: 36px;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-bottom: 20px;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .intro p {
+                font-size: 18px;
+                line-height: 1.6;
+                margin-bottom: 25px;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .intro h2 {
+                font-size: 28px;
+                margin-top: 30px;
+                font-weight: 600;
+                text-decoration: underline;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .home-box {
+                background-color: #f5f5f5;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                width: 250px;
+                padding: 20px;
+                text-align: center;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            }
+
+            .home-box:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+                background-color: #d8ecff;
+            }
+
+            .home-box-icon {
+                width: 50px;
+                height: 50px;
+                margin-bottom: 10px;
+            }
+
+            .home-box-content {
+                display: block;
+                font-size: 16px;
+                font-weight: normal;
+                text-decoration: none;
+                color: #333;
+                line-height: 1.5;
+            }
+
+            .home-box-content strong {
+                font-weight: bold;
+                color: #0066cc;
+            }
+
+            .home-box-content:hover {
+                color: #004d99;
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav class="navbar" id="navBar" style="background-color: #163c82;">
+            <img src="/picture?picture=logo/ptmkb-1-text-alt-2-black.png" style="width: 300px; padding: 10px 10px;" alt="PTMKB">
+            <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+            <ul class="navbar-items">
+                <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
+                <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+                <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
+                <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+                <li><a href="/download" class="nav-link"><span class="nav-item-box">Download</span></a></li>
+                <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="background-wrapper">
+                <div class="background-image"></div>
+            
+                <div class="content-layer">
+                    <img src="/picture?picture=logo/ptmkb-1-text-alt-2.png" style="width: 900px; margin-bottom: 20px;" alt="PTMKB">
+            
+                    <!-- Centered input group -->
+                    <div class="input-group position-relative" style="margin: 15px auto 0 auto; width: 800px; font-size: 30px;">
+                        <input class="form-control" style="font-size: 18px; text-align: left;" id="form_value" type="text" placeholder="Search for a protein by entering a Uniprot Identifier/Accession Number" style="text-align: center;">
+                        <span class="form-group input-group-btn">
+                            <button type="button" id="form_submit" class="btn btn-light landing-page-button" onclick="exampleSearch(this)">Search</button>
+                        </span>
+                        <div id="suggestions" class="suggestions-box" style="display: none;"></div>
+                    </div>
+            
+                    <div style="margin-top: 10px; margin-bottom: 20px;">
+                        <i class="fa fa-search fa-small"></i>
+                        <label style="margin: 0; font-weight: bold;">Examples:</label>
+                        <a onclick="exampleSearch(this)" class="index-options">P04637</a> 
+                        <a onclick="exampleSearch(this)" class="index-options">G6PI_HUMAN</a>
+                        <a onclick="exampleSearch(this)" class="index-options">VP26A_MOUSE</a>
+                        <a onclick="exampleSearch(this)" class="index-options">O14639-4</a>
+                        <a onclick="exampleSearch(this)" class="index-options">P25311</a>
+                    </div>
+
+                    <p style="width: 800px; margin: 10px auto 0 auto; text-align: left; font-size: 14px;">
+                        <a class="bullet-point" href="/documentation">➤ See guide on searching for proteins</a>
+                    </p>
+                </div>
+            </div>
+
+            <div style="background-color: #95b3eb; padding: 40px 0;">
+                <p style="font-size: 24px; text-align: justify; text-align-last: center; margin-bottom: -10px; width: 65%; margin: 0 auto;">
+                    <strong>PTMKB</strong> provides streamlined access to a comprehensive Post-Translational Modification database, tools, and algorithms to support research and innovation in drug discovery, disease understanding, and biotechnology.
+                </p>
+            </div>
+            <section class="intro" style="box-shadow: none; margin-top: -20px;">
+                <div class="container">
+
+                    <h3 class="header-bar">Background</h3>
+                    <p class="section-lead-minor">
+                        We catalogue post-translational data on over 200,000 unique proteins and 70 different types of PTMs.
+                        Along with that, we provide a per-residue propensity scoring metric that can be served through a RESTful API to allow for its seamless
+                        integration into protein search and identification workflows. This is provided through integration and synergy of various PTM and protein
+                        databases such as <a href="https://biomics.lab.nycu.edu.tw/dbPTM/">dbPTM</a>, <a href="https://www.uniprot.org">UniProt</a>, and
+                        <a href="https://www.rcsb.org">RCSB PDB Data Bank</a>, amongst others. The resulting datasets along with PTM frequency tables are publicly
+                        available for download. 
+                    </p>
+                    <p class="section-lead-minor">
+                        Let us know how PTMKB has helped in your research, or if you have questions about PTMKB in general, at <strong>safee.ullah.chaudhary@gmail.com</strong>.
+                    </p>
+
+                    <h3 class="header-bar">Key Features</h3>
+            
+                    <div class="feature-stack">
+                        <a href="/search" class="feature-bar-link">
+                            <div class="feature-bar">
+                                <img src="/picture?picture=icons/search-protein.png" alt="Search Icon" class="feature-bar-icon">
+                                <div class="feature-bar-text">
+                                    <strong>Search and find detail on PTMs</strong> (including evidences and secondary structures)
+                                </div>
+                            </div>
+                        </a>
+                    
+                        <a href="/propensity" class="feature-bar-link">
+                            <div class="feature-bar">
+                                <img src="/picture?picture=icons/propensity.png" alt="Propensity Calculator Icon" class="feature-bar-icon">
+                                <div class="feature-bar-text">
+                                    <strong>Use the propensity calculator</strong> to find the occurrence of a PTM per residue
+                                </div>
+                            </div>
+                        </a>
+                    
+                        <a href="/integration" class="feature-bar-link">
+                            <div class="feature-bar">
+                                <img src="/picture?picture=icons/secure-api.png" alt="API Integration Icon" class="feature-bar-icon">
+                                <div class="feature-bar-text">
+                                    <strong>Integrate PTMKB into systems</strong> through a fully-featured RESTful API
+                                </div>
+                            </div>
+                        </a>
+                    
+                        <a href="/download" class="feature-bar-link">
+                            <div class="feature-bar">
+                                <img src="/picture?picture=icons/download.png" alt="Download Icon" class="feature-bar-icon">
+                                <div class="feature-bar-text">
+                                    <strong>View and download the frequency matrices</strong>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <h3 class="header-bar">PTMKB Workflow</h3>
+                    
+                    <div class="text-center">
+                        <img src="/picture?picture=docs/ptmkb_workflow_new.png" alt="PTMKB Workflow" style="width: 1000px; border: 2px solid black;">
+                    </div>
+                </div>
+            </section>
+            <div class="background-wrapper" style="padding-top: 10px; padding-bottom: 40px; margin: 0 auto;">
+                <div class="container">
+                    <h3 class="header-bar">Want to know more?</h3>
+            
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px 40px;">
+                        <p style="width: calc(50% - 20px); margin: 0; font-size: 16px; font-family: 'Montserrat', sans-serif; text-align: left; padding-left: 20px;">
+                            <a href="/documentation" style="color: #2760b0; text-decoration: none;">➤ Consult our guide on using PTMKB</a>
+                        </p>
+                        <p style="width: calc(50% - 20px); margin: 0; font-size: 16px; font-family: 'Montserrat', sans-serif; text-align: left; padding-left: 20px;">
+                            <a href="/propensity" style="color: #2760b0; text-decoration: none;">➤ Calculate the propensity Score</a>
+                        </p>
+                        <p style="width: calc(50% - 20px); margin: 0; font-size: 16px; font-family: 'Montserrat', sans-serif; text-align: left; padding-left: 20px;">
+                            <a href="/integration" style="color: #2760b0; text-decoration: none;">➤ Get started with RESTful API</a>
+                        </p>
+                        <p style="width: calc(50% - 20px); margin: 0; font-size: 16px; font-family: 'Montserrat', sans-serif; text-align: left; padding-left: 20px;">
+                            <a href="/download" style="color: #2760b0; text-decoration: none;">➤ Download Frequency Matrices Data</a>
+                        </p>
+                        <p style="width: calc(50% - 20px); margin: 0; font-size: 16px; font-family: 'Montserrat', sans-serif; text-align: left; padding-left: 20px;">
+                            <a href="/about" style="color: #2760b0; text-decoration: none;">➤ Get to know our Team</a>
+                        </p>
+                        <p style="width: calc(50% - 20px); margin: 0; font-size: 16px; font-family: 'Montserrat', sans-serif; text-align: left; padding-left: 20px;">
+                            <a href="https://birl.lums.edu.pk" style="color: #2760b0; text-decoration: none;">➤ Check out the BIRL Lab</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer bg-light py-3" style="padding-top: 20px;">
+            <div class="container text-center">
+                <p class="mb-0" id="footerYear">This website is free and open to all users and there is no login requirement.</p>
+                <p class="mb-0">Biomedical Informatics & Engineering Research Laboratory, Lahore University of Management Sciences</p>
+                <p class="mb-0">DHA, Lahore, Pakistan, +92 (42) 3560 8352</p>
+            </div>
+        </footer>
+        <script>
+            // Get the current year and set it to the span
+            const date = new Date().getFullYear();
+            document.getElementById("footerYear").innerHTML = `<a href="http://birl.lums.edu.pk/">© ${date} BIRL</a> — This website is free and open to all users and there is no login requirement.`
+        </script>
+    </body>
+</html>

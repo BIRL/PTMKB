@@ -1,0 +1,1717 @@
+@font-face {
+    font-family: monsterrat;
+    src: url('/font?font=monsterrat');
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow-y: scroll;
+}
+
+/* Use Flexbox to lay out the body */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: monsterrat;
+}
+
+
+/* VIEWING PROTEIN HERE */
+
+.top-right-window {
+    width: 250px;
+    height: 250px;
+    position: fixed;
+    overflow: hidden;
+}
+
+#bottomAlphaFold {
+    position: absolute;
+    bottom: 0;
+}
+
+/* Style for the canvas element */
+.protein-canvas {
+    border: 3px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    background-color: #f5f5f5;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    margin: auto;
+}
+
+/* APPLYING MAIN CONTENT HERE */
+
+/* Main content will take up all the available space between the navbar and footer */
+.main-content {
+    flex: 1;
+    width: 1200px;
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.container {
+    width: 100%;
+}
+
+.suggestions-box {
+    display: none;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+}
+.suggestion-item:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.iframe-container {
+    display: none;
+    text-align: center;
+    margin-top: 40px;
+    width: 100%;
+}
+
+iframe {
+    height: 600px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#iFrameData {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #444;
+    font-weight: bold;
+}
+
+.alert {
+    width: 500px;
+    max-width: 1050px;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1)
+}
+
+.custom-container {
+    margin-top: 20px
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Navbar items container */
+.navbar-items {
+    display: flex;
+    list-style: none;
+    margin-top: 15px;
+}
+
+.navbar-items li {
+    margin-left: 20px;
+    margin: 0 auto;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    display: inline-block;
+    transition: color 0.3s ease;
+    margin: 0 auto;
+}
+
+/* Hover and active link styles */
+.nav-link:hover {
+    color: #85c0ff;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    color: #a8cfff;
+}
+
+.nav-link.search {
+    font-weight: bold;
+    color: #1a81ff;
+}
+
+.nav-link.propensity {
+    font-weight: bold;
+    color: #ff8b17;
+}
+
+/* Make navbar responsive */
+.navbar-toggler {
+    display: none;
+}
+
+/*
+    This is exclusively for Nav. TABS
+*/
+
+.nav-tabs .nav-link.active {
+    background-color: #ecf6ff; /* light blue, for example */
+    color: #00796b;            /* darker teal text */
+    border-color: #e0e8f0 #e0e8f0 #ecf6ff; /* match Bootstrap's border logic */
+}
+
+.tab-content > .tab-pane {
+    background-color: #ecf6ff;
+    border: 1px solid #e0e8f0;
+    border-top: none;
+    border-radius: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding: 20px;
+    width: 1280px;
+    margin: 0 auto;
+    margin-top: -16px;
+    margin-bottom: 20px;
+}
+
+/* Media queries for mobile responsiveness */
+@media (max-width: 1079px) {
+    .navbar-items {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .navbar-items li {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    .navbar-toggler {
+        display: block;
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+    .navbar-toggler.active + .navbar-items {
+        display: flex;
+    }
+}
+
+.btn-primary {
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #004085;
+}
+
+.lds-dual-ring {
+    color: #297fff;
+    margin: auto; 
+}
+.lds-dual-ring,
+.lds-dual-ring:after {
+    box-sizing: border-box;
+}
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6.4px solid currentColor;
+    border-color: currentColor transparent currentColor transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/*
+    Entering some custom CSS of my own
+*/
+
+.landing-page-button {
+    color: white;
+    background-color: #529fec;
+    border: 1px solid rgb(55, 113, 250);
+    margin-left: 10px;
+    transform: translateY(-5px);
+    transition: background-color 0.2s ease, color 0.2s ease, border 0.2s ease;
+}
+
+.landing-page-button:hover {
+    color: black;
+    background-color: #d4e9ff;
+    border: 1px solid rgb(114, 156, 255);
+}
+
+.index-options {
+    color: #d3d3d3;
+    background-color: #1870c8;
+    padding: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.index-options:hover{
+    background-color: #3a92ea;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.bullet-point {
+    font-weight: 700;
+    color: #0051a8;
+    text-decoration: none;
+    transition: color 0.1s linear;
+}
+
+.bullet-point:hover {
+    color: #186eca;
+}
+
+.header-bar {
+    position: relative;
+    font-size: 32px;
+    color: #333;
+    font-weight: bold;
+    padding-left: 20px; /* Space for the bar */
+    margin: 40px 0 20px;
+    text-align: left;
+}
+
+.header-bar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 6px;
+    background-color: #1d5cf0;
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.section-lead-major {
+    position: relative;
+    font-size: 26px !important;
+    color: #2a2a2a;
+    font-weight: 700;
+    padding-left: 20px;
+    margin: 40px 0 20px;
+    text-align: justify;
+    background-color: transparent;
+    line-height: 1.6;
+}
+
+.section-lead-minor {
+    position: relative;
+    font-size: 20px !important;
+    color: #2a2a2a;
+    font-weight: 400;
+    padding-left: 20px;
+    margin: 40px 0 20px;
+    text-align: justify;
+    background-color: transparent;
+    line-height: 1.6;
+}
+
+.header-bar:hover::before {
+    background-color: #719cff;
+}
+
+/*
+    Entering for the landing page image
+*/
+
+.background-wrapper {
+    position: relative;
+    background-color: rgba(105, 164, 253, 0.52); /* Background color */
+    width: 100%;
+    padding: 120px 0;
+    text-align: center;
+    overflow: hidden;
+}
+
+.background-wrapper-2 {
+    position: relative;
+    width: 60%;
+    margin: 0 auto;
+    padding-bottom: 140px;
+    border-radius: 5px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/picture?picture=icons/haemoglobin.png') center/contain no-repeat;
+    opacity: 0.1; /* Image opacity */
+    z-index: 1;
+}
+.content-layer {
+    position: relative;
+    z-index: 2;
+}
+
+.feature-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.feature-bar-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.feature-bar {
+    display: flex;
+    align-items: center;
+    background-color: #d8ecff;
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease;
+    width: 100%;
+    text-decoration: none;
+}
+
+.feature-bar:hover {
+    background-color: #bee0ff;
+    text-decoration: none;
+}
+
+.feature-bar-icon {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.feature-bar-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #333;
+    line-height: 1.5;
+    text-align: center;
+    width: 100%;
+}
+
+.feature-bar-text:hover {
+    text-decoration: none;
+}
+
+/*
+    Going to use this to display general protein information here
+*/
+
+/* Specific styles for the custom table container */
+.protein-info-container {
+    background-color: #e5e5e5;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow-x: auto;
+    position: relative;
+}
+
+/* New window styling for the top-right corner */
+.protein-info-container .top-right-window {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+/* Style for the disclaimer (customized to sit below 3DStructureInfo) */
+.disclaimer-text {
+    text-align: center;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+/* Table Styling - Scoped to the protein-info-container */
+.protein-info-container .table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Header Styling */
+.protein-info-container .table th {
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 16px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #0066cc;
+    text-transform: uppercase;
+}
+
+/* Table Cell Styling */
+.protein-info-container .table th, .protein-info-container .table td {
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+    /* transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; */
+}
+
+/* Default cell background (light blue-ish) */
+.protein-info-container .table td {
+    background-color: #e3f2fd;
+    color: #333;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    text-align: left;
+    white-space: pre-wrap;
+}
+
+/* Key Column */
+.protein-info-container .table td.key {
+    width: 200px;
+    text-align: center;
+    color: #444;
+    border-right: 2px solid #ddd;
+    background-color: #f7f7f7;
+    font-weight: 700;
+}
+/* 
+.protein-info-container .table td.value:hover {
+    background-color: #b0bec5;
+    color: #333;
+    transform: none;
+} */
+
+/* Focus State for Table Cells */
+.protein-info-container .table td:focus, .protein-info-container .table th:focus {
+    outline: 2px solid #007bff;
+    background-color: #e1f4fd;
+}
+
+/* Alternating Row Backgrounds */
+.protein-info-container .table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.protein-info-container .table tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+/* Responsive Table - Stack cells vertically on smaller screens */
+@media screen and (max-width: 1079px) {
+    .protein-info-container .table th, .protein-info-container .table td {
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    .protein-info-container .table td.key {
+        background-color: #f7f7f7;
+        font-weight: 700;
+    }
+
+    .protein-info-container .table td.value {
+        margin-left: 20px; /* Add some left margin for better readability */
+    }
+
+    .top-right-window {
+        visibility: hidden;
+    }
+
+    .top-right-window-disclaimer {
+        visibility: hidden;
+    }
+}
+
+
+/* PROTEIN SEQUENCE PTM STATISTICS HERE */
+/* Main container styles for protein stats */
+.protein-statistics-container {
+    background-color: #e5e5e5;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+/*
+    INCLUDING THIS HERE EXCLUSIVELY FOR STATISTICS TABLE
+*/
+
+#ptmTableSummary table {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: rgb(148, 148, 148);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 20px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+    border: solid 1px black;
+}
+
+#ptmTableSummary th,
+#ptmTableSummary td {
+    border: 1px solid #4c4c4c;
+    padding: 12px 16px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#ptmTableSummary thead th {
+    background-color: #3f51b5;
+    color: rgb(0, 0, 0);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+#ptmTableSummary tbody tr:hover {
+    background-color: #4c4c4c;
+}
+
+#ptmTableSummary td {
+    background-color: rgb(186, 226, 254);
+    transition: background-color 0.1s ease-in-out;
+}
+
+#ptmTableSummary td:hover {
+    background-color: #4c4c4c;
+    cursor: pointer;
+}
+
+/* Heading */
+.protein-statistics-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #444;
+    font-weight: bold;
+}
+
+/* Flexbox for rows */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Column styles */
+.col {
+    flex: 1 1 calc(33% - 20px);
+    min-width: 250px;
+    box-sizing: border-box;
+}
+
+/* Stat box styles */
+.stat-box {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    /* transition: transform 0.3s ease, box-shadow 0.3s ease; */
+}
+
+/* Icons */
+.stat-box i {
+    margin-bottom: 10px;
+    color: #007bff;
+}
+
+/* Links within the stat box */
+.stat-box a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Stat title */
+.stat-box h3 {
+    font-size: 2rem;
+    margin: 10px 0;
+    color: #555;
+}
+
+/* Stat description */
+.stat-box p {
+    font-size: 1rem;
+    color: #777;
+}
+
+/* Colors for different stat boxes */
+.info {
+    background-color: #e3f2fd;
+    border-left: 5px solid #1e88e5;
+}
+
+.success {
+    background-color: #e8f5e9;
+    border-left: 5px solid #43a047;
+}
+
+.warning {
+    background-color: #fff3e0;
+    border-left: 5px solid #ff9800;
+}
+
+
+/* Focus state */
+.stat-box a:focus {
+    outline: 2px solid #007bff;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .col {
+        flex: 1 1 100%;
+    }
+}
+
+
+
+@font-face {
+    font-family: 'perfectDOSVGA';
+    src: url('../data/fonts/perfect_dos_vga.ttf') format('truetype'),
+        url('../data/fonts/perfect_dos_vga.woff') format('woff'),
+        url('../data/fonts/perfect_dos_vga.woff2') format('woff2');
+}
+
+
+/* DISPLAYING THE PROTEIN SEQUENCE HERE */
+
+.protein-sequence-container {
+    background-color: #e5e5e5;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow-x: auto;
+}
+
+/* Container for sequence blocks */
+#sequenceDisplayer {
+    display: inline-block;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #f3f3f3; 
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); 
+    overflow: hidden;
+    flex-grow: 1;
+    /* width: 95%; */
+    box-sizing: border-box;
+    justify-items: left;
+    justify-content: left;
+    margin: 0 auto;
+}
+
+/* Each individual block of sequence */
+.sequence-block {
+    padding-top: 12px;
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Courier New', Courier, monospace;
+    position: relative;
+    transition: all 0.3s ease;
+    display: inline-block;
+    width: 150px;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Styling for the sequence chunk */
+.sequence-text {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    font-weight: 400;
+    text-align: center;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    pointer-events: none;
+    /* user-select: none; */
+}
+
+/* Styling for the block number */
+.block-number {
+    font-size: 12px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: -2px 5px;
+    border-radius: 3px;
+    margin-left: 10px;
+    user-select: none;
+    pointer-events: none;
+    position: absolute;
+    top: 0; /* Align to the top */
+    right: 0; /* Center horizontally */
+    transform: translateX(-48%)
+}
+
+/* Prevent text overflow issues */
+.sequence-text span {
+    display: inline-block;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* Container for the UniProt sequence information */
+.uniprot-sequence-info {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+/* Each information row with label and value */
+.uniprot-sequence-info .info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Label styling */
+.uniprot-sequence-info .info-row .label {
+    font-weight: bold;
+    color: #333;
+    flex: 1;
+    text-align: left;
+}
+
+/* Value styling */
+.uniprot-sequence-info .info-row .value {
+    font-weight: 500;
+    color: #2c3e50;
+    padding-left: 8px;
+}
+
+/* Separator line */
+.uniprot-sequence-info .info-row::before {
+    content: '|';
+    color: #aaa;
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+/* Styling for each key-value pair to keep space */
+.uniprot-sequence-info .info-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsiveness: Stack sequence blocks on smaller screens */
+@media screen and (max-width: 768px) {
+    #sequenceDisplayer {
+        padding: 15px;
+    }
+
+    .sequence-block {
+        width: 150px;
+        margin-bottom: 10px;
+    }
+
+    .sequence-text {
+        font-size: 16px;
+    }
+
+    .block-number {
+        font-size: 10px;
+    }
+}
+
+.details-panel {
+    padding: 20px;
+    background-color: linear-gradient(135deg, #f4f4f9 0%, #e0e0e0 100%); 
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    /* max-width: 90%; */
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    font-family: 'Arial', sans-serif;
+}
+
+.details-panel h2 {
+    font-size: 20px;
+    color: #007bff;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.details-panel .localized-sequence {
+    font-family: 'Courier New', Courier, monospace;
+    max-width: 450px;
+    margin: 0 auto;
+    font-size: 24px;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: #f4f7fa;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for bold PTMs */
+.details-panel .localized-sequence strong {
+    font-weight: 700;
+    color: #e64a19;
+}
+
+/* Highlighting the clicked residue */
+.details-panel .localized-sequence span.clicked-residue {
+    font-size: 20px;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 50%;
+    padding: 5px 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Add some space between the localized sequence and PTM info */
+.details-panel .ptm-info {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Panel focus state */
+.details-panel:focus {
+    outline: 3px solid #007bff;
+}
+
+/* Smooth transitions for hover and focus effects */
+.details-panel .localized-sequence span:hover {
+    background-color: #f5f5f5;
+    transition: background-color 0.3s ease;
+}
+
+/* Modify the styling for the PTM details container to prevent overflow */
+.details-panel .additional-ptm-details {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+/* Modify the PTM entry to manage link overflow */
+.details-panel .ptm-entry {
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f4f7fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Style for PTM Type label and content */
+.details-panel .ptm-entry p strong {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Ensure links are nicely separated and can wrap into the next line */
+.details-panel .ptm-entry p {
+    margin: 5px 0;
+    color: #333;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+/* Style for evidence identifiers (links) */
+.details-panel .ptm-entry p a {
+    color: #007bff;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 10px;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Hover effect for evidence links */
+.details-panel .ptm-entry p a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* Optional: Add a hover effect for the PTM entries */
+.details-panel .ptm-entry:hover {
+    background-color: #f1f1f1;
+    cursor: default;
+}
+
+.details-panel .ptm-scores {
+    background-color: #b4b4b4;
+    
+    border-radius: 4px;
+    border: #2c3e50;
+    cursor: default;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#chunkDetails {
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.highlightable-text {
+    cursor: default; 
+    font-size: inherit;
+    user-select: none;
+    display: inline-block;
+    position: relative;
+}
+
+/* General highlighted class for styling */
+.highlighted {
+    background-color: #f1c40f;
+    font-weight: 1000;
+    color: #2c3e50;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    pointer-events: visible;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+/* Hover effect on highlighted text */
+.highlighted:hover {
+    color: #ffffff;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.custom-tooltip {
+    background-color: #333;
+    text-align: center;
+    color: white;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    position: absolute;
+    z-index: 10;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* When the tooltip becomes visible */
+.custom-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tooltip:hover {
+    display:block;
+}
+
+.highlightable-text:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.overlay-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: 1px;
+    width: 10px;
+    height: 100%;
+    background-color: #ccc;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+
+/* THIS IS FOR FILTERING PTM STUFF */
+
+/* Styling for each checkbox list item */
+.checkbox-container li {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+    font-size: 14px;
+    padding: 0;
+    position: relative;
+    user-select: none;
+}
+
+/* Hide the checkbox input but keep it functional */
+.checkbox-container input[type="checkbox"] {
+    width: 0;
+    height: 0;
+    margin: 0;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+/* Styling for the labels associated with checkboxes */
+.checkbox-container input[type="checkbox"] + label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    color: #333;
+    background-color: #fff;
+    padding: 0 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+    min-height: 16px;
+}
+
+/* Hover and checked states for the labels */
+.checkbox-container input[type="checkbox"]:not(:checked) + label:hover,
+.checkbox-container input[type="checkbox"]:checked + label {
+    border-color: #007bff;
+    background-color: #f1f1f1;
+    color: #007bff;
+}
+
+/* Hover effect when checked */
+.checkbox-container input[type="checkbox"]:checked + label:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Styling to ensure the label behaves like a clickable checkbox */
+.checkbox-container input[type="checkbox"]:checked + label {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* Styling for collapsible sections (if needed) */
+.accordion {
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.panel {
+    display: none;
+    padding: 0 18px;
+    background-color: #f1f1f1;
+    margin-bottom: 10px;
+}
+
+.plus {
+    font-size: 18px;
+}
+
+.accordion:hover {
+    background-color: #555;
+}
+
+/* Styling for the search box */
+#searchBox {
+    width: 100%;
+    max-width: 350px;
+    padding: 12px 20px;
+    margin: 0;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    display: block;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+/* Adjust hover for search box */
+#searchBox:hover {
+    border-color: #007bff;
+}
+
+/* Focus state for the search box */
+#searchBox:focus {
+    border-color: #007bff;
+    outline: none;
+    background-color: #fff;
+}
+
+/* PTM TABLE OVERVIEW STUFF */
+.protein-ptm-overview {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.protein-ptm-overview__table-wrapper {
+    width: 100%;
+    height: 600px;
+    overflow-x: auto;
+}
+
+.protein-ptm-overview__table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.protein-ptm-overview__table th,
+.protein-ptm-overview__table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.protein-ptm-overview__table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.protein-ptm-overview__table td a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.protein-ptm-overview__table td a:hover {
+    text-decoration: underline;
+}
+
+/* EFFECTS FOR ADDITIONAL BUTTONS */
+/* General Button Styling */
+.additional-button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-color: #e3f2fd;
+    color: black;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Hover Effect */
+.additional-button:hover {
+    background-color: #c2e3fa;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Focus Effect */
+.additional-button:focus {
+    outline: none;
+    box-shadow: 0 0 10px #b8e2ff;
+}
+
+/* Button Active Effect (when clicked) */
+.additional-button:active {
+    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/*
+    DOUBLE STRUCTURE DISPLAY - USE THIS IN CONJUNCTION WITH MDTRAJ
+*/
+
+/* Container for the two PDB structures */
+#pdbStructures {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+}
+
+#afMajor, #rcsbMajor {
+    width: 100%;
+    height: 100%;
+    align-content: center;
+    vertical-align: top;
+}
+
+/* Set the size of each PDB viewer */
+#afPdbStructure, #rcsbPdbStructure {
+    vertical-align: top;
+    margin: 0 auto;
+    border: 2px solid #000000;
+    border-radius: 0px;
+    width: 500px;
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+}
+
+/*
+    USE THIS FOR PROPENSITY TABLES
+*/
+
+.PropensityTable {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0px auto;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-family: 'Arial', sans-serif;
+    table-layout: fixed;
+}
+
+.PropensityTable th {
+    padding: 12px 15px;
+    text-align: center;
+    color: #495057;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.PropensityTable td {
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+}
+
+.PropensityTable-row {
+    border-bottom: 1px solid #ddd;
+}
+
+.PropensityTable-key {
+    background-color: #f1f3f5;
+    color: #212529;
+    font-weight: 600;
+    text-align: left;
+    border-right: 1px solid #dee2e6;
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+.PropensityTable-value {
+    background-color: #ffffff;
+    color: #495057;
+    text-align: center;
+    border-right: 1px solid #dee2e6;
+    max-width: 250px;
+    word-wrap: break-word;
+}
+
+.PropensityTable-notes {
+    background-color: #ffffff;
+    color: #495057;
+    text-align: left;
+    max-width: 500px;
+    word-wrap: break-word;
+}
+
+.PropensityTable-row:hover {
+    background-color: #f1f3f5;
+}
+
+.PropensityTable-notes math {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 1079px) {
+    .PropensityTable {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .PropensityTable-key,
+    .PropensityTable-value,
+    .PropensityTable-notes {
+        padding: 10px 8px;
+    }
+
+    .PropensityTable th {
+        font-size: 1rem;
+        padding: 10px 12px;
+    }
+}
+
+/*
+    AND DISPLAYING THE VECTOR ITSELF
+*/
+
+#ptmVector {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 40px;
+    max-width: 1000px;
+    width: 100%;
+    display: block;
+}
+
+#dataVector {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#dataVector th, #dataVector td {
+    padding: 2px 4px;
+    border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#dataVector th {
+    background-color: #A0C4FF;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+#dataVector td {
+    background-color: #ffffff;
+    font-size: 1rem;
+    color: #495057;
+}
+
+#dataVector td:hover {
+    background-color: #f1f3f5;
+    cursor: pointer;
+}
+
+#dataVector td[style*="background-color: rgb(242, 201, 152)"] {
+    background-color: #F2C99A;
+    font-weight: bold;
+}
+
+#vectorHead {
+    background-color: #A0C4FF;
+    color: white;
+}
+
+@media (max-width: 1079px) {
+    #dataVector {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    #dataVector th, #dataVector td {
+        padding: 8px 15px;
+    }
+}
+
+/*
+    PAGE-EXCLUSIVE STUFF
+*/
+
+#markdown {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1280px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    width: 70%;
+}
+
+#swagger-ui {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f4f4f4;
+}
+
+/* DOWNLOADS PAGE */
+
+.custom-download {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+    padding-bottom: 10px;
+}
+
+.custom-download h2 {
+    color: #343a40;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.custom-download .form-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+.custom-download .form-select {
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    padding: 10px;
+    transition: border-color 0.3s;
+}
+
+.custom-download .form-select:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+/* 
+.custom-download #downloadButton {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.custom-download #downloadButton:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+} */
+
+/* ABOUT PAGE */
+
+.team-member {
+    margin-bottom: 30px;
+}
+
+.team-member img {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-top: 15px;
+}
+
+.team-member .card {
+    width: 350px;
+    height: 280px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.team-member .card-body {
+    text-align: center;
+}
+
+.team-member h4 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.team-member p {
+    font-size: 1rem;
+    color: #555;
+}
+
+.team-member a {
+    font-size: 1rem;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.team-member a:hover {
+    text-decoration: underline;
+}
+
+.team-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.publication-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.publication-item {
+    background-color: #ffffff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.publication-item p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.publication-item strong {
+    color: #333;
+}
+
+.publication-item .special-issue {
+    color: #2d6a4f;
+    font-style: italic;
+}
+
+.pub-number {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.question-mark {
+    color:#fff;
+    background-color:#0077ff;
+    width:16px;
+    height:16px;
+    display:inline-block;
+    border-radius:100%;
+    font-size:10px;
+    text-align:center;
+    text-decoration:none;
+    -webkit-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+}
+
+/* FOR CONTENTEDITABLE INPUT */
+
+[contenteditable=true]:empty:before {
+    content: attr(placeholder);
+    pointer-events: none;
+    color: #999;
+    display: block;
+}
