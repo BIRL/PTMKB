@@ -4,22 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perceptron-PTMKB - Search for a Protein</title>
+    <script src="/static/login.js" defer></script>
+    <script src="/static/search.js"></script>
+    <script src="/static/toggler.js" defer></script>
+    <link rel="stylesheet" href="/static/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous" defer></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous" defer></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js"></script>
-    <script src="../static/search.js" defer></script>
-    <script src="../static/toggler.js" defer></script>
-    <link rel="stylesheet" href="../static/styles.css">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous" defer></script> -->
+    <script src="https://unpkg.com/@popperjs/core@2" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js" defer></script>
 </head>
 <body>
     <nav class="navbar" id="navBar" style="background-color: #163c82;">
         <a href="/">
-            <img src="/picture?picture=logo/ptmkb-1-text-alt-2-black.png" style="width: 300px; padding: 10px 10px;" alt="PTMKB">
+            <img src="/static/images/logo/ptmkb-1-text-alt-2-black.png" style="width: 300px; padding: 10px 10px;" alt="PTMKB">
         </a>
         <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
         <ul class="navbar-items">
@@ -36,28 +37,9 @@
     </script>
 
     <div class="container-fluid mt-5" style="width: 90%; align-content: center;">
-        <!-- <div class="protein-statistics-container" style="background-color: #d8ecff; text-align: justify; text-align-last: center; max-width: 600px; margin: 0 auto; margin-bottom: -20px; padding-bottom: 20px;">
-            <p>Here, you can provide a protein's UniProt-based identifier and get to know in detail about the protein's general info, the sequence and PTMs on each residue, the predicted and actual secondary structures, and SASA values.</p>
-        </div>
-        <div class="alert alert-info text-center" style="width: 600px; margin-top: 40px;">
-            <i class="fa fa-search fa-small"></i>&nbsp;<strong><label>Search</label>&nbsp;(Enter Uniprot Identifier/Accession Number)</strong>
-            <div class="input-group position-relative">
-                <input class="form-control" id="form_value" type="text" placeholder="Enter UniProt ID or UniProt AC" style="text-align: center;">
-                <span class="form-group input-group-btn">
-                    <button type="button" id="form_submit" class="btn btn-primary" onclick="search()">Search</button>
-                </span>
-                <div id="suggestions" class="suggestions-box" style="display: none;"></div>
-            </div>
-            <i class="fa fa-search fa-small"></i><label style="padding: -20px; margin: 0;"><strong>Examples:</strong></label>
-            <a onclick="exampleSearch(this)" style="color: #1a0dab; text-decoration: underline; font-weight: normal; cursor: pointer;">P04637</a>, 
-            <a onclick="exampleSearch(this)" style="color: #1a0dab; text-decoration: underline; font-weight: normal; cursor: pointer;">G6PI_HUMAN</a>
-        </div> -->
 
         <div class="background-wrapper-2" id="search_field">
-            <!-- <div class="background-image"></div> -->
-        
             <div class="content-layer">
-                
                 <div class="input-group position-relative" style="margin: 15px auto 0 auto; width: 800px; font-size: 30px;">
                     <input class="form-control" style="font-size: 18px; text-align: left;" id="form_value" type="text" placeholder="Search for a protein by entering a Uniprot Identifier/Accession Number" style="text-align: center;">
                     <span class="form-group input-group-btn">
@@ -113,7 +95,7 @@
                 <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
                     <div id="proteinInfoContainer" class="protein-info-container" style="margin-bottom: 20px;">
                         <!-- <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold;">Protein Information</h1> -->
-                        <div id="protein3DStructure" class="top-right-window"></div>
+                        <!-- <div id="protein3DStructure" class="top-right-window"></div> -->
                         <div id="protein3DStructureInfo" class="top-right-window-disclaimer"></div>
                         <table class="table table-striped mx-auto">
                             <tbody class="thead-light" id="proteinInfo">
@@ -187,12 +169,14 @@
                     <div id="pdbMajor" class="protein-sequence-container">
                         <!-- <h1 style="text-align: center; font-size: 28px; color: #444; font-weight: bold; margin: 20px;">Protein PDB Structures</h1> -->
                         <div id="pdbStructures">
-                            <div id="afMajor" style="align-items: flex-start;">
+                            <div id="afMajor" style="align-items: flex-start; margin-top: 22px;">
                                 <h5 id="afHRef">AlphaFold Predicted Structure</h5>
-                                <button id="afClearLabels" class="additional-button">Clear Selections</button>
-                                <button id="afCenter" class="additional-button">Re-center</button>
-                                <button id="afShowDetails" data-type="2" class="additional-button">Cycle Style</button>
-                                <!-- <button id="afShowIndices" data-showing="false" class="additional-button" style="visibility: hidden;">Toggle Indices</button> -->
+                                <button id="afClearLabels" class="additional-button">Clear</button>
+                                <button id="afCenter" class="additional-button">Center</button>
+                                <button id="afShowDetails" data-type="2" class="additional-button">Style</button>
+                                <select id="afPtmFilter" class="additional-button">
+                                    <option value="__none__">PTMs: None</option>
+                                </select>
                                 <div id="afPdbStructure"></div>
                                 <div>
                                     <select style="visibility: hidden;"></select>
@@ -200,18 +184,20 @@
                             </div>
                             <div id="rcsbMajor" style="align-items: flex-start;">
                                 <h5 id="rcsbHRef">RCSB Verified Structure</h5>
-                                <button id="rcsbClearLabels" class="additional-button">Clear Selections</button>
-                                <button id="rcsbCenter" class="additional-button">Re-center</button>
-                                <button id="rcsbShowDetails" data-type="2" class="additional-button">Cycle Style</button>
-                                <!-- <button id="rcsbShowIndices" data-showing="false" class="additional-button" style="visibility: hidden;">Toggle Indices</button> -->
+                                <button id="rcsbClearLabels" class="additional-button">Clear</button>
+                                <button id="rcsbCenter" class="additional-button">Center</button>
+                                <button id="rcsbShowDetails" data-type="2" class="additional-button">Style</button>
+                                <span style="padding-left: 10px">PDB:</span>
+                                <select class="additional-button" id="pdbDropdownSelect"></select>
                                 <div id="rcsbPdbStructure"></div>
-                                <div>
-                                    <span style="padding-left: 10px">Select PDB:</span>
-                                    <select id="pdbDropdownSelect" style="height: 30px;"></select>
-                                </div>
-                                
                             </div>
                         </div>
+                        <p class="protein-statistics-container" style="padding-top: 20px; padding-bottom: 20px; margin: 20px auto; background: #f3f3f3;">
+                            For the visualizations:<br>
+                            <span style="color: rgb(0, 191, 0); font-weight: 700;">green</span> chains are unstructured regions of coils.<br>
+                            <span style="color: rgb(209, 178, 0); font-weight: 700;">yellow</span> chains are β-sheets (or beta strands).<br>
+                            <span style="color: rgb(232, 0, 0); font-weight: 700;">red</span> chains are α-helices.
+                        </p>
                         <div id="afProfile" style="display: none;">
                             <div id="afPdbInfo" class="protein-info-container" style="margin: 20px; background: linear-gradient(135deg, #f4f4f9 0%, #e0e0e0 100%); "></div>
                         </div>

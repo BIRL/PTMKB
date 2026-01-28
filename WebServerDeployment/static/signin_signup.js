@@ -1,8 +1,29 @@
-function checkForLogin() {
+async function checkForLogin() {
     const user = sessionStorage.getItem('user');
+    const setupDefault = () => {
+        const loginTab = document.createElement('li')
+        loginTab.innerHTML = `<a href="/signup-login" class="nav-link"><span class="nav-item-box">Login</span></a>`;
+        const tabs = document.getElementById('navBar').querySelector('.navbar-items');
+        tabs.appendChild(loginTab);
+    }
     if (user !== null) { // That means user is already logged in.
         // Append some new tabs with some functionality.
         const username = JSON.parse(user).username;
+        const isLoggedIn = await fetch('/ptmkb/verify', {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({"username": username})
+        })
+        .then(res => res.json())
+        .catch(err => { return false; });
+        if (!isLoggedIn['logged_in']) {
+            setupDefault();
+            sessionStorage.removeItem('user');
+            return;
+        }
         const userTab = document.createElement('li');
         const a_user = document.createElement('a');
         a_user.classList.add('nav-link');
@@ -43,112 +64,11 @@ function checkForLogin() {
             }
         });
 
-        // Copy token to clipboard
-        const copyTokenOption = document.createElement('a');
-        copyTokenOption.classList.add('dropdown-item');
-        copyTokenOption.href = '#';
-        copyTokenOption.innerHTML = 'Copy Token to Clipboard';
-        copyTokenOption.addEventListener('click', async function (e) {
-            e.preventDefault();
-            const response = await fetch('/ptmkb/fetch_token', {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({"username": username})
-            }).then(async (res) => {
-                return await res.json();
-            }).catch(err => {
-                console.error(err);
-            });
-
-            if (response && response.token) {
-                navigator.clipboard.writeText(response.token).then(() => {
-                    const popup = document.createElement('div');
-                    popup.textContent = 'Token copied!';
-                    popup.style.position = 'fixed';
-                    popup.style.bottom = '80px';
-                    popup.style.left = '100px';
-                    popup.style.transform = 'translateX(-50%)';
-                    popup.style.backgroundColor = 'rgba(0, 0, 0, 1)';
-                    popup.style.color = 'white';
-                    popup.style.padding = '10px 20px';
-                    popup.style.borderRadius = '5px';
-                    popup.style.fontSize = '20px';
-                    popup.style.display = 'none';
-                    popup.style.opacity = '1';
-                    popup.style.transition = 'opacity 1s ease-out';
-                    popup.style.userSelect = 'none';
-                    document.body.appendChild(popup);
-                    popup.style.display = 'block';
-                    setTimeout(() => {
-                        popup.style.opacity = '0';
-                        setTimeout(() => {
-                            popup.style.display = 'none';
-                            popup.style.opacity = '1';
-                        }, 1000);
-                    }, 3000);
-                }).catch(err => {
-                    alert('Failed to copy token: ' + err);
-                });
-            } else {
-                alert('Failed to retrieve token');
-            }
-        });
-
-        // Reset token (if expired)
-        const resetTokenOption = document.createElement('a');
-        resetTokenOption.classList.add('dropdown-item');
-        resetTokenOption.href = '#';
-        resetTokenOption.innerHTML = 'Reset Token';
-        resetTokenOption.addEventListener('click', async function (e) {
-            e.preventDefault();
-            const response = await fetch('/ptmkb/reset_token', {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({"username": username})
-            }).then(async (res) => {
-                return await res.json();
-            }).catch(err => {
-                console.error(err);
-            });
-            if (response && response.reset) {
-                navigator.clipboard.writeText(response.token).then(() => {
-                    const popup = document.createElement('div');
-                    popup.textContent = 'Token reset!';
-                    popup.style.position = 'fixed';
-                    popup.style.bottom = '80px';
-                    popup.style.left = '100px';
-                    popup.style.transform = 'translateX(-50%)';
-                    popup.style.backgroundColor = 'rgba(0, 0, 0, 1)';
-                    popup.style.color = 'white';
-                    popup.style.padding = '10px 20px';
-                    popup.style.borderRadius = '5px';
-                    popup.style.fontSize = '20px';
-                    popup.style.display = 'none';
-                    popup.style.opacity = '1';
-                    popup.style.transition = 'opacity 1s ease-out';
-                    popup.style.userSelect = 'none';
-                    document.body.appendChild(popup);
-                    popup.style.display = 'block';
-                    setTimeout(() => {
-                        popup.style.opacity = '0';
-                        setTimeout(() => {
-                            popup.style.display = 'none';
-                            popup.style.opacity = '1';
-                        }, 1000);
-                    }, 3000);
-                }).catch(err => {
-                    console.error('Failed to reset token: ' + err);
-                });
-            } else {
-                console.error('Failed to reset token');
-            }
-        });
+        // Profile
+        const profileOption = document.createElement('a');
+        profileOption.classList.add('dropdown-item');
+        profileOption.href = '/profile';
+        profileOption.innerHTML = 'Profile';
 
         // Log out
         const logoutOption = document.createElement('a');
@@ -166,7 +86,7 @@ function checkForLogin() {
             }).then(async (res) => {
                 return await res.json();
             }).catch(err => {
-                console.error(err);
+                // console.error(err);
             });
             if (response.logout) {
                 sessionStorage.removeItem('user');
@@ -175,8 +95,7 @@ function checkForLogin() {
         });
 
         // Append options to dropdown
-        dropdownMenu.appendChild(copyTokenOption);
-        dropdownMenu.appendChild(resetTokenOption);
+        dropdownMenu.appendChild(profileOption);
         dropdownMenu.appendChild(logoutOption);
 
         // Append the dropdown menu to the user tab
@@ -185,11 +104,9 @@ function checkForLogin() {
         // Append the user tab to the navbar
         const tabs = document.getElementById('navBar').querySelector('.navbar-items');
         tabs.appendChild(userTab);
-    } else { // Otherwise, just do nothing.
-        const loginTab = document.createElement('li')
-        loginTab.innerHTML = `<a href="/signup-login" class="nav-link"><span class="nav-item-box">Login</span></a>`;
-        const tabs = document.getElementById('navBar').querySelector('.navbar-items');
-        tabs.appendChild(loginTab);
+    }
+    else {
+        setupDefault();
     }
 }
 
@@ -223,7 +140,7 @@ async function login() {
         if (response.verify) { // The user has been authenticated - proceed!
             console.log("Verified!");
             sessionStorage.setItem('user', JSON.stringify(response.info));
-            document.location.href = '/';
+            document.location.href = '/profile';
         } else {
             document.getElementById('errorMsg').textContent = response.message;
         }
@@ -281,7 +198,7 @@ async function signup() {
                             console.error(err);
                         });
                         if (response.registered)
-                            document.getElementById('errorMsg').textContent = "Successful! Please log in above.";
+                            document.getElementById('errorMsg').textContent = "Successful! Please log in below.";
                         else
                         document.getElementById('errorMsg').textContent = "Error - please try signing up later!";
                     }

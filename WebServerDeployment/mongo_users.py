@@ -1,12 +1,17 @@
 # mongo_users.py
 import pymongo
 import hashlib
+from typing import Literal
+from datetime import datetime, timezone
 
 client = pymongo.AsyncMongoClient(
     'mongodb://localhost:27017',
 )
 
 USERS = client['ptmkb']['users']
+HISTORIES = client['ptmkb']['histories']
+
+# Below is user related
 
 def _hash(s: str) -> str:
     return hashlib.sha256(s.encode('utf-8')).hexdigest()
@@ -36,3 +41,24 @@ async def get_access_token(username: str) -> str | None:
 async def set_token(username: str, token_dict: dict) -> bool:
     res = await USERS.update_one({'username': username}, {'$set': {'token': token_dict}})
     return res.matched_count == 1
+
+# Below is history-related (search history through web browser AND API if needed)
+
+async def log_search_history(token_data: dict, mode: Literal['Web', 'API'], item: str, results: dict) -> bool:
+    res = await HISTORIES.insert_one(
+        {
+            "username": token_data.get('username'),
+            "protein": item,
+            "date": datetime.now(timezone.utc),
+            "mode": mode,
+            "results": results
+        }
+    )
+    return res.acknowledged
+
+async def retrieve_history(username: str):
+    res = [i async for i in HISTORIES.find(
+        { "username": username },
+        { '_id': 0 }
+    )]
+    return list(res)

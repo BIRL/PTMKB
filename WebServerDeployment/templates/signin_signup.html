@@ -1,77 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <script>
-        const user = sessionStorage.getItem('user')
-        if (user !== null) { // That means user is already logged in.
-            document.location.href = '/';
-        }
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perceptron-PTMKB - Sign up or log in</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="../static/signin_signup.js" defer></script>
-    <script src="../static/toggler.js" defer></script>
-    <link rel="stylesheet" href="../static/styles.css">
+  <script>
+    const user = sessionStorage.getItem('user');
+    if (user !== null) { document.location.href = '/'; }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perceptron-PTMKB - Sign up or log in</title>
+  <script src="/static/signin_signup.js"></script>
+  <script src="/static/toggler.js" defer></script>
+  <link rel="stylesheet" href="/static/styles.css">
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+        crossorigin="anonymous">
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+          crossorigin="anonymous" defer></script> -->
+  <script src="https://unpkg.com/@popperjs/core@2" defer></script>
+
+  <!-- Page-local polish using your site’s style language -->
+  <style>
+    body { background: #f9f9f9; color: #333; }
+
+    .auth-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px 0 40px;
+    }
+
+    .auth-hero {
+      background-color: rgba(105, 164, 253, 0.20);
+      border-radius: 12px;
+      padding: 26px 22px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url('/static/images/icons/haemoglobin.png') center/contain no-repeat;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+
+    .auth-hero-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .auth-brand img {
+      width: 360px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .auth-note {
+      max-width: 620px;
+      font-size: 16px;
+      line-height: 1.6;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .auth-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    @media (min-width: 992px) {
+      .auth-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .auth-card {
+      background-color: #e5e5e5; /* matches .protein-info-container vibe */
+      border-radius: 10px;
+      padding: 22px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .auth-card h4 {
+      text-align: left;
+      font-size: 22px;
+      color: #333;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .auth-sub {
+      margin-top: -6px;
+      margin-bottom: 14px;
+      opacity: 0.85;
+      font-size: 14px;
+    }
+
+    .auth-field {
+      margin: 10px 0;
+    }
+
+    .auth-field input.form-control {
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.18);
+      padding: 12px 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .auth-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .auth-actions .additional-button {
+      margin: 0;
+    }
+
+    .auth-hint {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 12px;
+    }
+
+    /* Error area styled like a soft alert */
+    #errorMsg {
+      max-width: 1280px;
+      margin: 14px auto 0 auto;
+      display: none; /* shown by JS by setting text + display */
+      background: #fff3cd;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      font-size: 16px;
+      font-weight: 700;
+      color: #5a4300;
+      text-align: center;
+    }
+
+    /* Small “why login” section */
+    .auth-footer-note {
+      max-width: 1280px;
+      margin: 18px auto 0 auto;
+      background: #d8ecff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.06);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background: rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+  </style>
 </head>
 
 <body>
-    <nav class="navbar" id="navBar" style="background-color: #163c82;">
-        <a href="/">
-            <img src="/picture?picture=logo/ptmkb-1-text-alt-2-black.png" style="width: 300px; padding: 10px 10px;" alt="PTMKB">
-        </a>
-        <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
-        <ul class="navbar-items">
-            <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
-            <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
-            <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
-            <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
-            <li><a href="/download" class="nav-link"><span class="nav-item-box">Download</span></a></li>
-            <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
-        </ul>
-    </nav>
-    <div class="container custom-download mt-4" style="background-color: #d8ecff; font-family: monsterrat;">
-        <h4 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;">Login with your Username</h4>
-        
-        <div class="mb-3" id="mod">
-            <input class="form-control" id="loginUsername" type="text" placeholder="Username" style="margin: 10px auto;">
-            <input class="form-control" id="loginPassword" type="password" placeholder="Password" style="margin: 10px auto;">
-            <div class="form-group input-group-btn" style="text-align: center;">
-                <button class="btn btn-primary" type="button" id="form_submit" onclick="login()">Login</button>
-            </div>
+  <nav class="navbar" id="navBar" style="background-color: #163c82;">
+    <a href="/">
+      <img src="/static/images/logo/ptmkb-1-text-alt-2-black.png" style="width: 300px; padding: 10px 10px;" alt="PTMKB">
+    </a>
+    <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+    <ul class="navbar-items">
+      <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
+      <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+      <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
+      <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+      <li><a href="/download" class="nav-link"><span class="nav-item-box">Download</span></a></li>
+      <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+    </ul>
+  </nav>
+
+  <main class="auth-wrap">
+    <div class="header-bar">Sign up / Log in</div>
+
+    <div class="auth-hero">
+      <div class="auth-hero-inner">
+        <div class="auth-brand">
+          <img src="/static/images/logo/ptmkb-1-text-alt-2.png" alt="PTMKB">
         </div>
+        <div class="auth-note">
+          Create an account to obtain a unique access token for API integration.
+          No email required. You can copy your token later from the navbar dropdown or your profile page.
+          <div style="margin-top:8px;">
+            Tip: keep usernames <span class="kbd">8–32</span> chars, alphanumeric.
+          </div>
+        </div>
+      </div>
     </div>
 
-    <h3 id="errorMsg" style="text-align: center; font-size: 24px; color: #444; font-weight: bold;"></h3>
+    <!-- Error message (your JS sets text; show it by toggling display) -->
+    <h3 id="errorMsg"></h3>
 
-    <div class="container custom-download mt-4" style="background-color: #d8ecff; font-family: monsterrat;">
-        <h4 style="text-align: center; font-size: 24px; color: #444; font-weight: bold;">Don't have your username? Sign up below!</h4>
-        
-        <div class="mb-3" id="mod">
-            <input class="form-control" id="signupUsername" type="text" placeholder="Enter username (alphanumeric characters, 8-32 characters)" style="margin: 10px auto;">
-            <input class="form-control" id="signupPassword1" type="password" placeholder="Enter password" style="margin: 10px auto;">
-            <input class="form-control" id="signupPassword2" type="password" placeholder="Re-enter password" style="margin: 10px auto;">
-            <div class="form-group input-group-btn" style="text-align: center;">
-                <button class="btn btn-primary" type="button" id="form_submit" onclick="signup()">Sign up</button>
-            </div>
+    <div class="auth-grid">
+      <!-- LOGIN -->
+      <div class="auth-card">
+        <h4>Login</h4>
+        <div class="auth-sub">Use your username and password to continue.</div>
+
+        <div class="auth-field">
+          <input class="form-control" id="loginUsername" type="text" placeholder="Username">
         </div>
+
+        <div class="auth-field">
+          <input class="form-control" id="loginPassword" type="password" placeholder="Password">
+        </div>
+
+        <div class="auth-actions">
+          <button class="additional-button" type="button" id="loginBtn" onclick="login()">Login</button>
+          <span class="auth-hint">Having trouble? Make sure caps-lock is off.</span>
+        </div>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="auth-card">
+        <h4>Sign up</h4>
+        <div class="auth-sub">Create a username and password to generate your access token.</div>
+
+        <div class="auth-field">
+          <input class="form-control" id="signupUsername" type="text"
+                 placeholder="Username (alphanumeric, 8–32 chars)">
+        </div>
+
+        <div class="auth-field">
+          <input class="form-control" id="signupPassword1" type="password" placeholder="Password">
+        </div>
+
+        <div class="auth-field">
+          <input class="form-control" id="signupPassword2" type="password" placeholder="Re-enter password">
+        </div>
+
+        <div class="auth-actions">
+          <button class="additional-button" type="button" id="signupBtn" onclick="signup()">Sign up</button>
+          <span class="auth-hint">Passwords must match.</span>
+        </div>
+      </div>
     </div>
-    <footer class="footer bg-light py-3" style="padding-top: 20px;">
-        <div class="container text-center">
-            <p class="mb-0" id="footerYear">This website is free and open to all users and there is no login requirement.</p>
-            <p class="mb-0">Biomedical Informatics & Engineering Research Laboratory, Lahore University of Management Sciences</p>
-            <p class="mb-0">DHA, Lahore, Pakistan, +92 (42) 3560 8352</p>
-        </div>
-    </footer>
-    <script>
-        // Get the current year and set it to the span
-        const date = new Date().getFullYear();
-        document.getElementById("footerYear").innerHTML = `<a href="http://birl.lums.edu.pk/">© ${date} BIRL</a> — This website is free and open to all users and there is no login requirement.`
-    </script>
+
+    <div class="auth-footer-note">
+      <strong>Why create an account?</strong>
+      You’ll get a per-user JWT access token to use with the RESTful API on the Integration page and access to your search history.
+      After logging in, you can copy the token from the navbar dropdown or your profile page.
+    </div>
+  </main>
+
+  <footer class="footer bg-light py-3" style="padding-top: 20px;">
+    <div class="container text-center">
+      <p class="mb-0" id="footerYear">This website is free and open to all users and there is no login requirement.</p>
+      <p class="mb-0">Biomedical Informatics & Engineering Research Laboratory, Lahore University of Management Sciences</p>
+      <p class="mb-0">DHA, Lahore, Pakistan, +92 (42) 3560 8352</p>
+    </div>
+  </footer>
+
+  <script>
+    const date = new Date().getFullYear();
+    document.getElementById("footerYear").innerHTML =
+      `<a href="http://birl.lums.edu.pk/">© ${date} BIRL</a> — This website is free and open to all users and there is no login requirement.`;
+  </script>
+
+  <!-- Tiny helper: if your JS writes error text, show the box automatically -->
+  <script>
+    // If your signin_signup.js sets innerText only, this will reveal it.
+    const errorMsg = document.getElementById('errorMsg');
+    const obs = new MutationObserver(() => {
+      if (errorMsg.textContent && errorMsg.textContent.trim().length > 0) {
+        errorMsg.style.display = 'block';
+      } else {
+        errorMsg.style.display = 'none';
+      }
+    });
+    obs.observe(errorMsg, { childList: true, characterData: true, subtree: true });
+  </script>
 </body>
 </html>
+ 

@@ -1,80 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perceptron-PTMKB - Download Positional Frequency Matrix</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <script src="../static/download.js"></script>
-    <script src="../static/toggler.js" defer></script>
-    <link rel="stylesheet" href="../static/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perceptron-PTMKB • Download</title>
+  <script src="/static/login.js" defer></script>
+  <script src="/static/download.js"></script>
+  <script src="/static/toggler.js" defer></script>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+        crossorigin="anonymous">
+
+
+  <style>
+    body { background: #f9f9f9; color: #333; }
+
+    .download-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px 0 40px;
+    }
+
+    .download-hero {
+      background-color: rgba(105, 164, 253, 0.20);
+      border-radius: 12px;
+      padding: 24px 22px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url('/static/images/icons/haemoglobin.png') center/contain no-repeat;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+
+    .download-hero-inner {
+      position: relative;
+      z-index: 2;
+    }
+
+    .bulk-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    @media (min-width: 992px) {
+      .bulk-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .bulk-card {
+      background: #e5e5e5;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+      border: 1px solid rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .bulk-card h4 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .bulk-desc {
+      font-size: 14px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .bulk-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .download-section {
+      margin-top: 22px;
+    }
+
+    .download-note {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 10px;
+    }
+
+    .protein-info-container .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 0;
+      margin-left: -15px;
+      margin-right: -15px;
+    }
+
+    .protein-info-container .row > [class*="col-"] {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+ 
+  </style>
 </head>
+
 <body>
-    <nav class="navbar" id="navBar" style="background-color: #163c82;">
-        <a href="/">
-            <img src="/picture?picture=logo/ptmkb-1-text-alt-2-black.png" style="width: 300px; padding: 10px 10px;" alt="PTMKB">
-        </a>
-        <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
-        <ul class="navbar-items">
-            <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
-            <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
-            <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
-            <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
-            <li><a href="/download" class="nav-link active"><span class="nav-item-box">Download</span></a></li>
-            <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
-        </ul>
-    </nav>
+  <!-- Navbar -->
+  <nav class="navbar" id="navBar" style="background-color: #163c82;">
+    <a href="/">
+      <img src="/static/images/logo/ptmkb-1-text-alt-2-black.png"
+           style="width: 300px; padding: 10px 10px;" alt="PTMKB">
+    </a>
+    <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+    <ul class="navbar-items">
+      <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
+      <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+      <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
+      <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+      <li><a href="/download" class="nav-link active"><span class="nav-item-box">Download</span></a></li>
+      <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+    </ul>
+  </nav>
 
-    <div class="container custom-download mt-4" style="display: flexbox; background-color: #d8ecff;">
-        <h4 style="text-align: center;">Download Positional Frequency Matrix Tables</h4>
-        
-        <div class="mb-3 d-flex align-items-center gap-2" id="mod">
-            <label for="ptmSelect" class="form-label" style="width: 55%;">Select PTM:</label>
-            <select id="ptmSelect" class="form-control"></select>
+  <main class="download-wrap">
+    <div class="header-bar">Download</div>
+
+    <!-- HERO + BULK DOWNLOADS -->
+    <div class="download-hero">
+      <div class="download-hero-inner">
+        <h3 style="font-weight: 800;">Bulk Downloads</h3>
+        <p class="download-note">
+          Download the complete PTMKB dataset or all derived tables for offline analysis.
+        </p>
+
+        <div class="bulk-grid">
+          <!-- Entire dataset -->
+          <div class="bulk-card">
+            <div>
+              <h4>Complete PTMKB Dataset</h4>
+              <div class="bulk-desc">
+                Download the entire curated PTMKB dataset in a single archive.
+                This includes all proteins with all evidence-backed PTM annotations.
+                Recommended for large-scale or offline analysis.
+              </div>
+            </div>
+            <div class="bulk-actions">
+              <a href="/ptmkb/download-dataset" class="additional-button">
+                Download Dataset (19.8 MBs)
+              </a>
+            </div>
+          </div>
+
+          <!-- All tables -->
+          <div class="bulk-card">
+            <div>
+              <h4>All PTMKB Positional Frequency Matrices</h4>
+              <div class="bulk-desc">
+                Download all PTMKB frequency matrices in JSON format.
+                Useful if you want individual tables without the full dataset archive.
+              </div>
+            </div>
+            <div class="bulk-actions">
+              <!-- Update href when backend endpoint is finalized -->
+              <a href="/ptmkb/download-all-tables" class="additional-button">
+                Download All Matrices (695 KBs)
+              </a>
+            </div>
+          </div>
         </div>
-
-        <div class="mb-3 d-flex align-items-center gap-2" id="aa">
-            <label for="aaSelect" class="form-label" style="width: 55%;">Select Amino Acid:</label>
-            <select id="aaSelect" class="form-control">
-            </select>
-        </div>
-
-        <div class="mb-3 d-flex align-items-center gap-2" id="tab">
-            <label for="tableSelect" class="form-label" style="width: 55%;">Select matrix type:</label>
-            <select id="tableSelect" class="form-control">
-                <option>Frequency</option>
-                <option>Log Odd (base e)</option>
-            </select>
-        </div>
-
-        <div class="mb-3 d-flex align-items-center gap-2" id="download">
-            <label for="downloadSelect" class="form-label" style="width: 55%;">Select download option:</label>
-            <select id="downloadSelect" class="form-control">
-                <option>PNG</option>
-                <option>PDF</option>
-                <option>SVG</option>
-                <option>JSON</option>
-                <option>CSV</option>
-            </select>
-        </div>
-
-        <button id="downloadButton" class="btn btn-primary" style="margin: 0 auto;" onclick="saveFile()">Download</button>
+      </div>
     </div>
 
-    <div id="ptmTable" style="margin-left: auto; margin-right: auto; margin-top: 20px; margin-bottom: 20px;"></div>
+    <!-- EXISTING PFM DOWNLOAD UI -->
+    <div class="protein-info-container download-section">
+      <h3 style="font-weight: 800;">Download Positional Frequency Matrix</h3>
 
-    <footer class="footer bg-light py-3" style="padding-top: 20px;">
-        <div class="container text-center">
-            <p class="mb-0" id="footerYear">This website is free and open to all users and there is no login requirement.</p>
-            <p class="mb-0">Biomedical Informatics & Engineering Research Laboratory, Lahore University of Management Sciences</p>
-            <p class="mb-0">DHA, Lahore, Pakistan, +92 (42) 3560 8352</p>
+      <p class="download-note">
+        Select a post-translational modification, amino acid, and table type
+        to download a specific positional frequency matrix.
+      </p>
+
+      <div class="row">
+        <div class="col-md-4 col-sm-12">
+          <label for="ptmSelect"><strong>Modification</strong></label>
+          <select id="ptmSelect" class="form-control"></select>
         </div>
-    </footer>
-    <script>
-        // Get the current year and set it to the span
-        const date = new Date().getFullYear();
-        document.getElementById("footerYear").innerHTML = `<a href="http://birl.lums.edu.pk/">© ${date} BIRL</a> — This website is free and open to all users and there is no login requirement.`
-    </script>
+
+        <div class="col-md-4 col-sm-12">
+          <label for="aaSelect"><strong>Amino Acid</strong></label>
+          <select id="aaSelect" class="form-control"></select>
+        </div>
+
+        <div class="col-md-4 col-sm-12">
+          <label for="tableSelect"><strong>Table Type</strong></label>
+          <select id="tableSelect" class="form-control"></select>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 14px;">
+        <div class="col-md-12">
+          <label for="downloadSelect"><strong>Download Format</strong></label>
+          <select id="downloadSelect" class="form-control"></select>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <button id="downloadButton" class="additional-button">
+          Download Selected Matrix
+        </button>
+      </div>
+
+      <!-- Optional preview table -->
+      <div id="ptmTable" style="margin-top: 20px;"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer bg-light py-3" style="padding-top: 20px;">
+    <div class="container text-center">
+      <p class="mb-0" id="footerYear">This website is free and open to all users and there is no login requirement.</p>
+      <p class="mb-0">Biomedical Informatics & Engineering Research Laboratory, Lahore University of Management Sciences</p>
+      <p class="mb-0">DHA, Lahore, Pakistan, +92 (42) 3560 8352</p>
+    </div>
+  </footer>
+
+  <script>
+    const date = new Date().getFullYear();
+    document.getElementById("footerYear").innerHTML =
+      `<a href="http://birl.lums.edu.pk/">© ${date} BIRL</a> — This website is free and open to all users and there is no login requirement.`;
+  </script>
 </body>
 </html>

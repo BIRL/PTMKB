@@ -7,16 +7,28 @@ from fastapi.responses import ORJSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import Response, FileResponse
+from fastapi.middleware.gzip import GZipMiddleware
+from starlette.responses import Response, FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import io
-import os
+import orjson
+import json # for a very specific issue
+import zipfile
+from datetime import datetime
+from bson import ObjectId
+import csv
+import asyncio
 
-from mongo_users import set_token, user_exists, create_user, get_access_token, validate_password
-from mongo_ptm import fetch_identifiers, search_identifier
+from mongo_users import (
+    set_token, user_exists, create_user, get_access_token, validate_password,
+    log_search_history, retrieve_history
+)
+from mongo_ptm import fetch_identifiers, search_identifier, PTM
 from calculator import additive_calculator, multiplicative_calculator
 from response_fetcher import fetch_response_uniprot_trim
 from jpred_prediction import submit_job, get_job
@@ -42,7 +54,7 @@ def sign_jwt(user_id: str) -> dict[str, str]:
     payload = {
         '_id_': random.randint(1, 10000000000),
         "username": user_id,
-        "expires": time.time() + 432000 # Valid for 5 days
+        "expires": time.time() + (30 * 24 * 60 * 60) # Valid for 30 days
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
@@ -51,7 +63,8 @@ def sign_jwt(user_id: str) -> dict[str, str]:
 # Decode the token by the user
 def decode_jwt(token: str) -> dict | None:
     try:
-        decoded_token: dict = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        decoded_token: dict = jwt.decode(
+            token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         decoded_token['expired'] = False
         if decoded_token["expires"] < time.time():
             decoded_token['expired'] = True
@@ -89,7 +102,7 @@ class JWTBearer(HTTPBearer):
                 detail=f"Automatically reset token! Here: {new_token.get('access_token')}"
             )
 
-        return presented_token
+        return validity
 
     def verify_jwt(self, jwtoken: str) -> bool:
         isTokenValid: bool = False
@@ -122,6 +135,12 @@ def is_browser(user_agent: str) -> bool:
 
 ######## LOGIN AND SIGNUP PURPOSES ########
 
+from contextlib import asynccontextmanager
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.SESSIONS = {}
+    yield
+    del app.state.SESSIONS
 
 app = FastAPI(
     docs_url=None,
@@ -130,7 +149,9 @@ app = FastAPI(
     version="1.0.0",
     swagger_ui_oauth2_redirect_url=None,
     redirect_slashes=False,
+    lifespan=lifespan
 )
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 @app.post('/ptmkb/check_existing_user', include_in_schema=False)
 async def check_for_existing_user(request: Request):
@@ -203,10 +224,17 @@ async def attempt_login(request: Request):
                 new_token = sign_jwt(username)
                 await set_token(username, new_token)
                 token = new_token.get('access_token')
+            app.state.SESSIONS[username] = request.client.host
             return ORJSONResponse({'verify': True, 'message': '', 'info': {'username': username, 'token': token}})
         return ORJSONResponse({'verify': False, 'message': "Your password is invalid."})
 
     return ORJSONResponse({'verify': False, 'message': f"No user by the name of {username} exists."})
+
+@app.post('/ptmkb/verify', include_in_schema=False)
+async def verify_login(request: Request):
+    data: dict = await request.json()
+    is_logged_in = app.state.SESSIONS.get(data.get('username', ''), '') == request.client.host
+    return ORJSONResponse({"logged_in": is_logged_in})
 
 @app.post('/ptmkb/logout', include_in_schema=False)
 async def logout(request: Request):
@@ -217,6 +245,7 @@ async def logout(request: Request):
     try:
         info: dict = await request.json()
         username = info.pop('username')
+        app.state.SESSIONS.pop(username, None)
         return ORJSONResponse({'logout': True})
     except:
         return ORJSONResponse({'logout': False})
@@ -239,6 +268,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 templates = Jinja2Templates(directory='templates/')
 app.mount('/static', StaticFiles(directory="static"), name="static")
+app.mount('/static-fonts', StaticFiles(directory="data/fonts"), name="fonts")
 
 ######## CUSTOM FUNCTION FOR SORTING ########
 
@@ -308,6 +338,16 @@ def home_page(request: Request):
         "search.html", context={"request": request}
     )
 
+@app.get("/profile", include_in_schema=False)
+def home_page(request: Request):
+    user_agent = request.headers.get('user-agent', '')
+    if not is_browser(user_agent):
+        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+    
+    return templates.TemplateResponse(
+        "profile.html", context={"request": request}
+    )
+
 @app.get("/signup-login", include_in_schema=False)
 def home_page(request: Request):
     user_agent = request.headers.get('user-agent', '')
@@ -372,10 +412,10 @@ def integration_page(request: Request):
 
 @app.get('/ptmkb/protein_autofill', include_in_schema=False)
 async def search(_id: str, request: Request):
-    user_agent = request.headers.get('user-agent', '')
+    # user_agent = request.headers.get('user-agent', '')
 
-    if not is_browser(user_agent):
-        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+    # if not is_browser(user_agent):
+    #     raise HTTPException(status_code=403, detail="Access restricted to browsers only")
     
     # Probably best to insert elements in a database
     ids = await fetch_identifiers(_id)
@@ -393,10 +433,10 @@ with open('./templates/protein.html', 'r', encoding='utf-8') as f:
 
 @app.post('/ptmkb/search_result', include_in_schema=False)
 async def search(request: Request):
-    user_agent = request.headers.get('user-agent', '')
+    # user_agent = request.headers.get('user-agent', '')
 
-    if not is_browser(user_agent):
-        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+    # if not is_browser(user_agent):
+    #     raise HTTPException(status_code=403, detail="Access restricted to browsers only")
     
     data = await request.json()
     data['id'] = data['id'].strip()
@@ -410,6 +450,18 @@ async def search(request: Request):
     if found:
         if not isinstance(results['Accession Number'], str):
             results['Accession Number'] = ''
+            
+        user = data.get('userData')
+        if isinstance(user, str):
+            try:
+                user = orjson.loads(user)
+                token = user.get('token')
+                res = decode_jwt(token)
+                if res is not None:
+                    await log_search_history(decode_jwt(user.get('token')), 'Web', data['id'], results)
+            except:
+                ...
+
     return ORJSONResponse({
         'found': found,
         'result': results,
@@ -417,7 +469,7 @@ async def search(request: Request):
     })
 
 @app.post('/ptmkb/structure_calculations', include_in_schema=False)
-async def get_structure_calculations(request: Request, data: dict = Body(...)):
+def get_structure_calculations(request: Request, data: dict = Body(...)):
     user_agent = request.headers.get('user-agent', '')
     if not is_browser(user_agent):
         raise HTTPException(status_code=403, detail="Access restricted to browsers only")
@@ -474,7 +526,7 @@ def save_image(df: pd.DataFrame, format: str, ptm: str) -> bytes:
             return f"{x:.2f}"
         return str(x)
 
-    df_fmt = df.applymap(fmt)
+    df_fmt = df.apply(lambda col: col.map(fmt))
     col_labels = [str(c) for c in df_fmt.columns]
     row_labels = [str(r) for r in df_fmt.index]
 
@@ -524,31 +576,28 @@ def save_image(df: pd.DataFrame, format: str, ptm: str) -> bytes:
 
     # --- 6) Save to bytes (no temp files)
     buf = io.BytesIO()
-    plt.savefig(buf, format=format.lower(), dpi=300)
+    fig.savefig(buf, format=format.lower(), dpi=300)
     plt.close(fig)
     buf.seek(0)
     return buf.getvalue()
 
 def save_data(df: pd.DataFrame, format: str) -> bytes:
+    buf = io.BytesIO()
     if format == "CSV":
-        # Simple fix for CSV
-        df = df.astype(str)
-        df.to_csv(f'./temp.csv')
+        df.astype(str).to_csv(buf, index=True)
     elif format == "JSON":
-        df.to_json('./temp.json')
-    with open(f'./temp.{format.lower()}', 'rb') as f:
-        raw_data = f.read()
-    os.remove(f'./temp.{format.lower()}')
-    return raw_data
+        buf.write(df.to_json().encode())
+    buf.seek(0)
+    return buf.getvalue()
 
 @app.post('/ptmkb/download', include_in_schema=False)
-async def download(request: Request):
-    user_agent = request.headers.get('user-agent', '')
+def download(request: Request, data: dict = Body(...)):
+    # user_agent = request.headers.get('user-agent', '')
 
-    if not is_browser(user_agent):
-        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+    # if not is_browser(user_agent):
+    #     raise HTTPException(status_code=403, detail="Access restricted to browsers only")
     
-    data: dict = await request.json()
+    # data: dict = request.json()
 
     return_header = {
         "CSV": 'text/csv',
@@ -561,7 +610,8 @@ async def download(request: Request):
     ptm = data.get("ptm")
     aa = data.get('aa')
     table = data.get('table')
-    format = data.get("format")
+    format: str = data.get("format")
+    format = format.upper()
     rounded = True # data.get('rounded')
 
     data = PTM_TABLES.get(ptm, {}).get(aa, {}).get(table, {})
@@ -580,10 +630,10 @@ async def download(request: Request):
 # This function is a separate call
 @app.post('/ptmkb/get_protein_log', include_in_schema=False)
 async def get_log_value(request: Request):
-    user_agent = request.headers.get('user-agent', '')
+    # user_agent = request.headers.get('user-agent', '')
 
-    if not is_browser(user_agent):
-        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+    # if not is_browser(user_agent):
+    #     raise HTTPException(status_code=403, detail="Access restricted to browsers only")
     
     data: dict = await request.json()
     data = dict(sorted(data.items(), key=lambda item: int(item[0])))
@@ -623,35 +673,34 @@ async def get_amino_acids(request: Request, ptm: str):
 
 @app.get('/ptmkb/getPTM', include_in_schema=False)
 async def get_ptm_details(request: Request, resid: str = None, ptm: str = None, aa: str = None):
-    user_agent = request.headers.get('user-agent', '')
+    # user_agent = request.headers.get('user-agent', '')
 
-    if not is_browser(user_agent):
-        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
-    
-    # Check whether RESID ID or both PTM and Residue are given.
-    # Both will be handled differently.
+    # if not is_browser(user_agent):
+    #     raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+
     entry = None
     if resid:
         resid = resid.upper()
         entry = [entry for entry in RESID_DATABASE if entry['@id'] == resid]
-        # If caught entry,
         if entry:
             _id = entry[0]['@id']
-            # going to send image and model files as raw data.
-            with open(
-                f"./data/resid/images/{_id}.GIF", 'rb'
-            ) as f:
-                entry[0]['Image'] = {}
-                entry[0]['Image']['Data'] = f.read().decode('latin-1')
-                entry[0]['Image']['Encoding'] = 'latin-1'
-                entry[0]['Image']['FileType'] = '.GIF'
-            with open(
-                f"./data/resid/models/{_id}.PDB", 'rb'
-            ) as f:
-                entry[0]['Model'] = {}
-                entry[0]['Model']['Data'] = f.read().decode()
-                entry[0]['Model']['Encoding'] = 'utf-8'
-                entry[0]['Model']['FileType'] = '.PDB'
+
+            async def _read_bytes(path, mode='rb'):
+                return await asyncio.to_thread(lambda: open(path, mode).read())
+
+            img_bytes = await _read_bytes(f"./data/resid/images/{_id}.GIF", 'rb')
+            pdb_bytes = await _read_bytes(f"./data/resid/models/{_id}.PDB", 'rb')
+
+            entry[0]['Image'] = {
+                "Data": img_bytes.decode('latin-1'),
+                "Encoding": "latin-1",
+                "FileType": ".GIF"
+            }
+            entry[0]['Model'] = {
+                "Data": pdb_bytes.decode(),
+                "Encoding": "utf-8",
+                "FileType": ".PDB"
+            }
 
     elif (ptm and aa):
         aa = aa.upper()
@@ -669,27 +718,29 @@ async def get_ptm_details(request: Request, resid: str = None, ptm: str = None, 
             )
         ]
         if entry:
+            async def _read_bytes(path, mode='rb'):
+                return await asyncio.to_thread(lambda: open(path, mode).read())
+
             for i in range(len(entry)):
                 _id = entry[i]['@id']
-                # going to send image and model files as raw data.
-                with open(
-                    f"./data/resid/images/{_id}.GIF", 'rb'
-                ) as f:
-                    entry[i]['Image'] = {}
-                    entry[i]['Image']['Data'] = f.read().decode('latin-1')
-                    entry[i]['Image']['Encoding'] = 'latin-1'
-                    entry[i]['Image']['FileType'] = '.GIF'
-                with open(
-                    f"./data/resid/models/{_id}.PDB", 'rb'
-                ) as f:
-                    entry[i]['Model'] = {}
-                    entry[i]['Model']['Data'] = f.read().decode()
-                    entry[i]['Model']['Encoding'] = 'utf-8'
-                    entry[i]['Model']['FileType'] = '.PDB'
+                img_bytes = await _read_bytes(f"./data/resid/images/{_id}.GIF", 'rb')
+                pdb_bytes = await _read_bytes(f"./data/resid/models/{_id}.PDB", 'rb')
+
+                entry[i]['Image'] = {
+                    "Data": img_bytes.decode('latin-1'),
+                    "Encoding": "latin-1",
+                    "FileType": ".GIF"
+                }
+                entry[i]['Model'] = {
+                    "Data": pdb_bytes.decode(),
+                    "Encoding": "utf-8",
+                    "FileType": ".PDB"
+                }
     else:
         return ORJSONResponse({'message': "Please enter either a RESID ID or a PTM name along with a residue!"})
 
     return ORJSONResponse({'response': entry})
+ 
 
 
 ######## Non-API CALLS ########
@@ -701,7 +752,7 @@ async def get_jpred_prediction(request: Request):
         raise HTTPException(status_code=403, detail="Access restricted to browsers only")
     
     info = await request.json()
-    return await submit_job(info['sequence'])
+    return ORJSONResponse(await submit_job(info['sequence']))
 
 @app.get('/ptmkb/unrel/getJpred', include_in_schema=False)
 async def get_jpred_prediction_status(request: Request, jobid: str):
@@ -709,7 +760,7 @@ async def get_jpred_prediction_status(request: Request, jobid: str):
     if not is_browser(user_agent):
         raise HTTPException(status_code=403, detail="Access restricted to browsers only")
     
-    return await get_job(jobid)
+    return ORJSONResponse(await get_job(jobid))
 
 @app.get('/ptmkb/ptms_list', include_in_schema=False)
 async def get_ptms(request: Request):
@@ -720,13 +771,12 @@ async def get_ptms(request: Request):
     return ORJSONResponse({'ptms': list(PTM_TABLES.keys())})
 
 @app.get('/ptmkb/all_ptms_tables', include_in_schema=False)
-def get_all_ptms_tables(request: Request):
-    user_agent = request.headers.get('user-agent', '')
+def get_all_ptms_tables(request: Request, response: Response):
+    # user_agent = request.headers.get('user-agent', '')
 
-    if not is_browser(user_agent):
-        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
-    
-    return ORJSONResponse(PTM_TABLES)
+    # if not is_browser(user_agent):
+    #     raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+    return ORJSONResponse(PTM_TABLES, headers={'Cache-Control': "public, max-age=2592000"})
 
 @app.get('/ptmkb/pos_matrix', include_in_schema=False)
 def get_matrix(
@@ -735,10 +785,10 @@ def get_matrix(
     residue: str = Query(''),
     table: str = Query('log-e')
 ):
-    user_agent = request.headers.get('user-agent', '')
+    # user_agent = request.headers.get('user-agent', '')
 
-    if not is_browser(user_agent):
-        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+    # if not is_browser(user_agent):
+    #     raise HTTPException(status_code=403, detail="Access restricted to browsers only")
     
     residue = residue.upper()
     if not ptm:
@@ -766,10 +816,10 @@ async def calculate_propensity(
     ptm: str = Query(''),
     subsequence: str = Query('')
 ) -> dict:
-    user_agent = request.headers.get('user-agent', '')
+    # user_agent = request.headers.get('user-agent', '')
 
-    if not is_browser(user_agent):
-        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+    # if not is_browser(user_agent):
+    #     raise HTTPException(status_code=403, detail="Access restricted to browsers only")
     
     if ptm == '' and subsequence == '':
         return {
@@ -827,9 +877,56 @@ async def calculate_propensity(
     })
     return ORJSONResponse(response)
 
+@app.get('/ptmkb/history', include_in_schema=False)
+async def get_user_search_history(request: Request, username: str):
+    user_agent = request.headers.get('user-agent', '')
+    if not is_browser(user_agent):
+        raise HTTPException(status_code=403, detail="Access restricted to browsers only")
+    return ORJSONResponse(await retrieve_history(username))
+
+@app.get("/ptmkb/download-all-tables")
+def download_all_tables():
+    async def gen():
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as z:
+            for ptm, aa_map in (PTM_TABLES or {}).items():
+                if not isinstance(aa_map, dict):
+                    continue
+                for aa, table_map in aa_map.items():
+                    if not isinstance(table_map, dict):
+                        continue
+                    for table_name, table_data in table_map.items():
+                        path = f"{ptm}/{aa}/{table_name}.json"
+                        z.writestr(path, orjson.dumps(table_data).decode("utf-8"))
+
+            z.writestr(
+                "README.txt",
+                "Structure:\n"
+                "  <PTM>/<AA>/<table>.json\n\n"
+                "Source:\n"
+                "  /ptmkb/all_ptms_table\n"
+            )
+
+        buf.seek(0)
+        yield buf.getvalue()
+
+    return StreamingResponse(
+        gen(),
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="ptmkb_ptm_tables.zip"'},
+    )
+
+@app.get("/ptmkb/download-dataset")
+def download_dataset():
+    return FileResponse(
+        path='ptmkb_dataset.zip',
+        media_type='application/zip',
+        filename='ptmkb_dataset.zip'
+    )
+
 ######## API CALLS ########
 
-@app.get('/ptmkb/api/get-ptm-details', dependencies=[Depends(JWTBearer())], responses={
+@app.get('/ptmkb/api/get-ptm-details', responses={
     200: {
         "description": "Success",
         "content": {
@@ -927,46 +1024,40 @@ async def calculate_propensity(
         }
     }
 })
-def get_post_translational_modification_details(
+async def get_post_translational_modification_details(
     request: Request,
     resid: str = Query('', description='The RESID Database ID to use.', example='AA0039')
 ):
-    """
-    Get information on a Post-Translational Modification using RESID ID.
-
-    **Returns:**
-    - Detailed information on a Post-Translational Modification. (type: *JSON*)
-    """
-
-    # Let's do some input validation first.
-    resid = resid.upper().strip() # And that's about it.
+    resid = resid.upper().strip()
 
     entry = [i for i in RESID_DATABASE if i.get('@id', '') == resid]
+    if not entry:
+        return {'message': 'Please provide a valid RESID Database ID.'}
 
-    # We also have to include raw bytes of PDB and image
+    async def _read_bytes(path, mode='rb'):
+        return await asyncio.to_thread(lambda: open(path, mode).read())
+
     for i in range(len(entry)):
         _id = entry[i]["@id"]
-        with open(
-            f"./data/resid/images/{_id}.GIF", 'rb'
-        ) as f1, open(
-            f"./data/resid/models/{_id}.PDB", 'rb'
-        ) as f2:
-            entry[i]['Image'] = {
-                "Data": f1.read().decode('latin-1'),
-                "Encoding": "latin-1",
-                "FileType": ".GIF"
-            }
-            entry[i]['Model'] = {
-                "Data": f2.read().decode(),
-                "Encoding": "utf-8",
-                "FileType": ".PDB"
-            }
-    if entry:
-        return ORJSONResponse({resid: entry[0]})
-    return {'message': 'Please provide a valid RESID Database ID.'}
+        img_bytes = await _read_bytes(f"./data/resid/images/{_id}.GIF", 'rb')
+        pdb_bytes = await _read_bytes(f"./data/resid/models/{_id}.PDB", 'rb')
+
+        entry[i]['Image'] = {
+            "Data": img_bytes.decode('latin-1'),
+            "Encoding": "latin-1",
+            "FileType": ".GIF"
+        }
+        entry[i]['Model'] = {
+            "Data": pdb_bytes.decode(),
+            "Encoding": "utf-8",
+            "FileType": ".PDB"
+        }
+
+    return ORJSONResponse({resid: entry[0]})
+ 
 
 
-@app.get("/ptmkb/api/get-protein-details", dependencies=[Depends(JWTBearer())], responses={
+@app.get("/ptmkb/api/get-protein-details", responses={
     200: {
         "description": "Success",
         "content": {
@@ -992,7 +1083,8 @@ def get_post_translational_modification_details(
 })
 async def get_protein_details(
     upid: str = Query(None, description='UniProt Protein Identifier', example='AF9_HUMAN'),
-    upac: str = Query(None, description='UniProt Accession Number', example='O14746')
+    upac: str = Query(None, description='UniProt Accession Number', example='O14746'),
+    token_data: dict = Depends(JWTBearer())
 ):
     """
     Get the details of a protein and its Post-Translational Modifications (PTMs),
@@ -1010,10 +1102,15 @@ async def get_protein_details(
     _id = _id.upper()
     found, results = await search_identifier(_id)
     if found:
+        try:
+            results = results[0]
+        except IndexError:
+            ...
+        await log_search_history(token_data, 'API', _id, results)
         return ORJSONResponse({'result': results})
-    return {'message': 'Could not find the queried protein!'}
+    return ORJSONResponse({'message': 'Could not find the queried protein!'})
 
-@app.get("/ptmkb/api/get-available-ptms", dependencies=[Depends(JWTBearer())], responses={
+@app.get("/ptmkb/api/get-available-ptms", responses={
     200: {
         "description": "Success",
         "content": {
@@ -1027,7 +1124,9 @@ async def get_protein_details(
         }
     }
 })
-async def get_available_post_translational_modifications():
+async def get_available_post_translational_modifications(
+    token_data: dict = Depends(JWTBearer()),
+):
     """
     Get a list of available Post-Translational Modifications (PTMs) in the database.
 
@@ -1036,7 +1135,7 @@ async def get_available_post_translational_modifications():
     """
     return {"ptms": list(PTM_TABLES.keys())}
 
-@app.get("/ptmkb/api/get-positional-frequency-matrix", dependencies=[Depends(JWTBearer())], responses={
+@app.get("/ptmkb/api/get-positional-frequency-matrix", responses={
     200: {
         "description": "Success",
         "content": {
@@ -1512,7 +1611,8 @@ async def get_available_post_translational_modifications():
 async def get_positional_frequency_matrix(
     ptm: str = Query('', description='The dbPTM-annotated Post-Translational Modification.', example='Phosphorylation'),
     residue: str = Query('', description='The amino acid for which the table is required.', example='S'),
-    table: str = Query('log-e', description="The type of matrix required. Accepted values are 'freq' and 'log-e'.", example='freq')
+    table: str = Query('log-e', description="The type of matrix required. Accepted values are 'freq' and 'log-e'.", example='freq'),
+    token_data: dict = Depends(JWTBearer())
 ):
     """
     Get the positional frequency matrix of a Post-Translational Modification (PTM),
@@ -1533,7 +1633,7 @@ async def get_positional_frequency_matrix(
     # 1) nothing provided -> everything (filtered to the requested table)
     if not ptm and not residue:
         if not tables:
-            return {'message': 'No PTM tables are loaded.'}
+            return ORJSONResponse({'message': 'No PTM tables are loaded.'})
         result = {
             ptm_name: {
                 aa: aa_maps.get(table, {}) for aa, aa_maps in aa_dict.items()
@@ -1546,7 +1646,7 @@ async def get_positional_frequency_matrix(
     if ptm and not residue:
         ptm_map = tables.get(ptm)
         if not ptm_map:
-            return {'message': f"Unknown PTM '{ptm}'."}
+            return ORJSONResponse({'message': f"Unknown PTM '{ptm}'."})
         result = {aa: aa_maps.get(table, {}) for aa, aa_maps in ptm_map.items()}
         return ORJSONResponse(result)
 
@@ -1554,19 +1654,19 @@ async def get_positional_frequency_matrix(
     if ptm and residue:
         ptm_map = tables.get(ptm)
         if not ptm_map:
-            return {'message': f"Unknown PTM '{ptm}'."}
+            return ORJSONResponse({'message': f"Unknown PTM '{ptm}'."})
         aa_map = ptm_map.get(residue)
         if not aa_map:
-            return {'message': f"No data for PTM '{ptm}' on residue '{residue}'."}
+            return ORJSONResponse({'message': f"No data for PTM '{ptm}' on residue '{residue}'."})
         matrix = aa_map.get(table)
         if matrix is None:
-            return {'message': f"No '{table}' matrix for PTM '{ptm}' on residue '{residue}'."}
+            return ORJSONResponse({'message': f"No '{table}' matrix for PTM '{ptm}' on residue '{residue}'."})
         return ORJSONResponse(matrix)
 
     # 4) residue without PTM (not covered by your docstring) -> guide the user
-    return {'message': "Please provide a PTM (optionally with a residue) or provide nothing to retrieve all matrices."}
+    return ORJSONResponse({'message': "Please provide a PTM (optionally with a residue) or provide nothing to retrieve all matrices."})
 
-@app.get('/ptmkb/api/calculate-propensity', dependencies=[Depends(JWTBearer())], responses={
+@app.get('/ptmkb/api/calculate-propensity', responses={
     200: {
         "description": "Success",
         "content": {
@@ -1581,7 +1681,8 @@ async def get_positional_frequency_matrix(
 })
 async def calculate_propensity(
     ptm: str = Query('', description='The dbPTM-annotated Post-Translational Modification.', example='Phosphorylation'),
-    subsequence: str = Query('', description='The subsequence to use for calculation. The PTM site will be automatically derived from the sequence.', example='WKLLPENNVLSPLPSQAMDDW')
+    subsequence: str = Query('', description='The subsequence to use for calculation. The PTM site will be automatically derived from the sequence.', example='WKLLPENNVLSPLPSQAMDDW'),
+    token_data: dict = Depends(JWTBearer())
 ) -> dict:
     """
     Calculate the Propensity of a residue for a Post-Translational Modification.

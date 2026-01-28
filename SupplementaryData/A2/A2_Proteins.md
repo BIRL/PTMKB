@@ -1,0 +1,12 @@
+| # | Protein (Gene) | UniProt Accession | Representative Phosphosites (S/T/Y) | Key References (PubMed) |
+|---|----------------|-------------------|--------------------------------------|--------------------------|
+| 1 | TP53 (p53) | [P04637](https://www.uniprot.org/uniprotkb/P04637) | S15, T18, Y126/Y220 | Canman CE et al., *Science* 1998 [PMID: 9603734]; Shieh SY et al., *Genes Dev* 1997 [PMID: 9203579]; Yuan ZM et al., *Nature* 1999 [PMID: 10391243] |
+| 2 | EGFR (Epidermal Growth Factor Receptor) | [P00533](https://www.uniprot.org/uniprotkb/P00533) | S1046, T654, Y1068/Y1086 | Countaway JL et al., *J Biol Chem* 1992 [PMID: 1331043]; Heisermann GJ et al., *J Biol Chem* 1990 [PMID: 2163738]; Matsuda M et al., *J Biol Chem* 1990 [PMID: 2161831] |
+| 3 | SRC (Proto-oncogene tyrosine-protein kinase Src) | [P12931](https://www.uniprot.org/uniprotkb/P12931) | S17, T34, Y416/Y527 | Bagrodia S et al., *EMBO J* 1991 [PMID: 1655403]; Watanabe G et al., *Nature* 1984 [PMID: 6095811] |
+| 4 | STAT3 (Signal Transducer and Activator of Transcription 3) | [P40763](https://www.uniprot.org/uniprotkb/P40763) | S727, T714, Y705 | Wen Z et al., *Cell* 1995 [PMID: 7778903]; Lim CP et al., *Mol Cell Biol* 1999 [PMID: 10454566] |
+| 5 | AKT1 (Protein Kinase B) | [P31749](https://www.uniprot.org/uniprotkb/P31749) | S473, T308, Y176 | Alessi DR et al., *EMBO J* 1996 [PMID: 8895571]; Mahajan K et al., *Mol Cell* 2010 [PMID: 20660728] |
+| 6 | GSK3B (Glycogen Synthase Kinase-3β) | [P49841](https://www.uniprot.org/uniprotkb/P49841) | S9, T43, Y216 | Cross DA et al., *Nature* 1995 [PMID: 7898934]; Lesort M et al., *J Biol Chem* 1999 [PMID: 10409747] |
+| 7 | MAPK1 (ERK2) | [P28482](https://www.uniprot.org/uniprotkb/P28482) | S244, T185, Y187 | Payne DM et al., *EMBO J* 1991 [PMID: 1935914]; Brunet A et al., *Cell* 1999 [PMID: 10199407] |
+| 8 | PTK2 (FAK — Focal Adhesion Kinase) | [Q05397](https://www.uniprot.org/uniprotkb/Q05397) | S732, T474, Y397/Y576 | Lim ST et al., *J Cell Biol* 2003 [PMID: 14610056]; Calalb MB et al., *Mol Cell Biol* 1995 [PMID: 8524267] |
+| 9 | RELA (NF-κB p65) | [Q04206](https://www.uniprot.org/uniprotkb/Q04206) | S536, T505, Y23 | Sakurai H et al., *J Biol Chem* 1999 [PMID: 10446212]; Takada Y et al., *J Biol Chem* 2003 [PMID: 12672822] |
+| 10 | IRS1 (Insulin Receptor Substrate 1) | [P35568](https://www.uniprot.org/uniprotkb/P35568) | S307, T522, Y612/Y632 | Tanasijevic MJ et al., *J Biol Chem* 1993 [PMID: 8440702]; Rui L et al., *J Biol Chem* 2001 [PMID: 11279008] |

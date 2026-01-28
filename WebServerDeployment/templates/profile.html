@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    async function check() {
+      const user = sessionStorage.getItem('user');
+      if (user !== null) {
+        const username = JSON.parse(user).username;
+        const isLoggedIn = await fetch('/ptmkb/verify', {
+          method: "POST",
+          headers: {
+              "Accept": "application/json",
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({"username": username})
+        })
+        .then(res => res.json())
+        .catch(err => { document.location.href = '/'; });
+        if (!isLoggedIn['logged_in']) {
+            document.location.href = '/';
+        }
+      } else {
+        document.location.href = '/';
+      }
+    }
+    check();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perceptron-PTMKB - Profile</title>
+  <script src="/static/login.js" defer></script>
+  <script src="/static/profile.js"></script>
+  <script src="/static/toggler.js" defer></script>
+  <link rel="stylesheet" href="/static/styles.css">
+
+  <!-- Bootstrap + libs (keep what your server already uses) -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+        crossorigin="anonymous">
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+          crossorigin="anonymous" defer></script>
+  <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"
+          integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI="
+          crossorigin="anonymous" defer></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+          crossorigin="anonymous" defer></script> -->
+  <script src="https://unpkg.com/@popperjs/core@2" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+ 
+
+  <!-- Your site assets -->
+
+  <style>
+    .profile-page-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px 0 40px;
+    }
+
+    .muted {
+      opacity: 0.8;
+      font-size: 14px;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Token textarea styling */
+    #tokenBox {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 12px 12px;
+      background: #f9f9f9;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    /* Prevent selecting/copying from token box */
+    #tokenBox {
+      user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+      justify-content: flex-start;
+    }
+
+    .empty-state {
+      background: #d8ecff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-top: 12px;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    .history-accordion {
+      margin-top: 12px;
+    }
+
+    .history-accordion .accordion {
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .history-accordion .panel {
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    #toastish {
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      z-index: 9999;
+      background: rgba(0,0,0,0.88);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      display: none;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      user-select: none;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+    }
+
+    .section-spacer {
+      margin-top: 18px;
+    }
+
+    /* Expired label */
+    .token-expired {
+      color: #b91c1c;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+    }
+
+    pre.codebox {
+      margin: 12px 0 0;
+      background: #0b1020;
+      color: #e5e7eb;
+      padding: 14px;
+      border-radius: 12px;
+      overflow: auto;
+      font-size: 13px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    }
+
+    /* 1) On the Profile page only: prevent the container from adding horizontal scroll */
+    .profile-page-wrap .protein-info-container {
+      overflow-x: hidden !important; /* overrides overflow-x:auto in styles.css */
+    }
+
+    /* 2) Make accordion + panel never exceed container width */
+    .profile-page-wrap #historyAccordion,
+    .profile-page-wrap #historyAccordion > div,
+    .profile-page-wrap #historyAccordion .accordion,
+    .profile-page-wrap #historyAccordion .panel {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+
+    /* 3) Confine the PTM table area inside each panel */
+    .profile-page-wrap #historyAccordion .panel .table-wrap {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+
+      max-height: 480px;          /* adjust as you like */
+      overflow-y: auto;           /* vertical scroll inside table area */
+      overflow-x: hidden !important; /* no horizontal scroll */
+    }
+
+    /* 4) Ensure table fits container and wraps content */
+    .profile-page-wrap #historyAccordion .panel table {
+      width: 100% !important;
+      table-layout: fixed;        /* prevents table from expanding due to long content */
+    }
+
+    /* 5) Make references wrap (no truncation, no scroll-x) */
+    .profile-page-wrap #historyAccordion .panel td,
+    .profile-page-wrap #historyAccordion .panel td * {
+      white-space: normal !important;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    /* Optional: sticky table header inside the scrollable table-wrap */
+    .profile-page-wrap #historyAccordion .panel thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar (unchanged) -->
+  <nav class="navbar" id="navBar" style="background-color: #163c82;">
+    <a href="/">
+        <img src="/static/images/logo/ptmkb-1-text-alt-2-black.png" style="width: 300px; padding: 10px 10px;" alt="PTMKB">
+    </a>
+    <button class="navbar-toggler" onclick="toggleNavbar()">☰</button>
+    <ul class="navbar-items">
+      <li><a href="/search" class="nav-link"><span class="nav-item-box">Search</span></a></li>
+      <li><a href="/propensity" class="nav-link"><span class="nav-item-box">Propensity</span></a></li>
+      <li><a href="/documentation" class="nav-link"><span class="nav-item-box">Documentation</span></a></li>
+      <li><a href="/integration" class="nav-link"><span class="nav-item-box">Integration</span></a></li>
+      <li><a href="/download" class="nav-link"><span class="nav-item-box">Download</span></a></li>
+      <li><a href="/about" class="nav-link"><span class="nav-item-box">About</span></a></li>
+    </ul>
+  </nav>
+
+  <main class="profile-page-wrap">
+
+    <div class="header-bar">User Profile</div>
+
+    <!-- Profile Summary (removed Status + Session) -->
+    <div class="protein-info-container">
+      <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <div>
+          <div class="muted">Username</div>
+          <div class="h4 mb-2" id="profileUsername" style="font-weight: 800;">—</div>
+        </div>
+
+        <div class="text-right">
+          <div class="muted">Token Expiry</div>
+          <div class="mono" id="profileExpiry">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Token Box -->
+    <div class="protein-info-container section-spacer">
+      <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <div class="header-bar" style="margin: 0; font-size: 26px;">JWT Access Token</div>
+        <div class="muted" id="tokenFetchStatus">—</div>
+      </div>
+
+      <div class="section-lead-minor" style="margin: 10px 0 0; padding-left: 0;">
+        The token is masked and cannot be copied from the textbox. Use <b>Copy Token</b>.
+      </div>
+
+      <textarea id="tokenBox" readonly placeholder="Login to load your token..."></textarea>
+
+      <div class="btn-row">
+        <button class="additional-button" id="btnCopyToken" type="button" disabled>Copy Token</button>
+        <button class="additional-button" id="btnResetToken" type="button">Reset Token</button>
+      </div>
+
+      <!-- Tutorial space -->
+      <div class="section-spacer">
+        <div class="header-bar" style="margin: 0; font-size: 22px;">Use this token in Python</div>
+        <div class="muted" style="margin-top: 6px;">
+          Copy the token using the button above, then send it as a Bearer token in the Authorization header. Use the Python code below to simulate an example.
+        </div>
+<div class="code-wrapper">
+  <button class="additional-button" onclick="copyCode(this)">Copy Code</button>
+        <pre class="codebox"><code class="language-python"># 1) Install:
+#    pip install requests
+#
+# 2) Paste the token you copied:
+
+import requests
+
+ACCESS_TOKEN = "PASTE_TOKEN_HERE"
+url = "https://perceptronptmkb.lums.edu.pk/ptmkb/api/get-available-ptms"
+
+resp = requests.get(
+    url,
+    headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
+)
+
+if resp.status_code == 200:
+    print(resp.json())
+else:
+    print(resp.text)
+ </code>
+</pre>
+</div>
+<script>
+function copyCode(btn) {
+  const code = btn.nextElementSibling.innerText;
+  navigator.clipboard.writeText(code);
+  btn.innerText = "Copied!";
+  setTimeout(() => btn.innerText = "Copy", 1500);
+}
+</script>
+        <div class="muted" style="margin-top: 6px;">
+          With your token, navigate to the <a href="/integration">Integration</a> tab and download the script to get started.
+        </div>
+        <div class="muted" style="margin-top: 6px;">
+          Keep tokens private. Don’t share them, log them, or commit them to git.
+        </div>
+      </div>
+    </div>
+
+    <!-- Search History (unchanged) -->
+    <div class="protein-info-container section-spacer">
+      <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <div class="header-bar" style="margin: 0; font-size: 26px;">Search History</div>
+      </div>
+
+      <div id="historyEmpty" class="empty-state" style="display:none;">
+        <div class="h5 mb-1" style="font-weight: 800;">No history yet</div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table table-hover" id="historyTable" style="display:none; margin-bottom: 0;">
+          <thead>
+            <tr>
+              <th style="width: 220px;">Timestamp</th>
+              <th>Query</th>
+              <th style="width: 120px;">Page</th>
+              <th style="width: 160px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+
+      <div id="historyAccordion" class="history-accordion"></div>
+    </div>
+
+    <div id="toastish">Copied!</div>
+  </main>
+
+  <footer class="footer bg-light py-3" style="padding-top: 20px;">
+    <div class="container text-center">
+      <p class="mb-0" id="footerYear">This website is free and open to all users and there is no login requirement.</p>
+      <p class="mb-0">Biomedical Informatics & Engineering Research Laboratory, Lahore University of Management Sciences</p>
+      <p class="mb-0">DHA, Lahore, Pakistan, +92 (42) 3560 8352</p>
+    </div>
+  </footer>
+
+  <script>
+    const date = new Date().getFullYear();
+    document.getElementById("footerYear").innerHTML =
+      `<a href="http://birl.lums.edu.pk/">© ${date} BIRL</a> — This website is free and open to all users and there is no login requirement.`;
+  </script>
+</body>
+</html>

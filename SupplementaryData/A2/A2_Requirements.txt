@@ -1,0 +1,4 @@
+pandas
+numpy
+requests
+great_tables[extra]

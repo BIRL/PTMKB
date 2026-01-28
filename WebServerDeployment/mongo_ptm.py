@@ -10,6 +10,7 @@ PTM = client['ptmkb']['proteins']
 # Functions below related to PTM
 
 async def fetch_identifiers(_id: str) -> list[str]:
+    _id = _id.upper()
     ids = [
         [doc.get('Protein Identifier'), {doc.get('Accession Number')}]
         if isinstance(doc.get('Accession Number'), str) else [doc.get('Protein Identifier')]
@@ -17,18 +18,8 @@ async def fetch_identifiers(_id: str) -> list[str]:
         PTM.find(
             {
                 '$or': [
-                    {
-                        'Protein Identifier': {
-                            '$regex': f'^{_id}',
-                            '$options': 'i'
-                        }
-                    },
-                    {
-                        'Accession Number': {
-                            '$regex': f'^{_id}',
-                            '$options': 'i'
-                        }
-                    }
+                    { 'Protein Identifier': { '$regex': f'^{_id}' } },
+                    { 'Accession Number': { '$regex': f'^{_id}' } }
                 ]
             },
             {
@@ -36,7 +27,7 @@ async def fetch_identifiers(_id: str) -> list[str]:
                 'Accession Number': 1,
                 '_id': 0
             }
-        )
+        ).limit(20)
     ]
     ids = list(itertools.chain.from_iterable(ids))
     ids = [i.pop() if isinstance(i, set) else i for i in ids]
@@ -44,8 +35,7 @@ async def fetch_identifiers(_id: str) -> list[str]:
 
 async def search_identifier(_id: str) -> tuple[bool, dict[str, str]]:
     results = [
-        i async for i in
-        PTM.find(
+        await PTM.find_one(
             {
                 '$or': [
                     {'Protein Identifier': _id},
